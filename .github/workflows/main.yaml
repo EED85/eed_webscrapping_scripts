@@ -24,4 +24,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MD_TOKEN }}
         run: |
           uv run --python 3.11 main.py
-

@@ -31,8 +31,12 @@ def download_json_to_duckdb(url, con):
 
 
 def prepare_db():
-    with open(os.path.join(home_dir, ".motherduck_token")) as f:
-        md_token = f.read()
+    try:
+        with open(os.path.join(home_dir, ".motherduck_token")) as f:
+            md_token = f.read()
+    except Exception:
+        md_token = os.getenv('MD_TOKEN')
+
     con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
     con.sql("CREATE DATABASE IF NOT EXISTS dwd")
     con.sql("USE dwd")
