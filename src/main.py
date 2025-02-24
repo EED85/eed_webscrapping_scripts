@@ -1,7 +1,4 @@
-import duckdb
-import os
-
-home_dir = os.path.expanduser("~")
+from modules import prepare_db
 
 
 def download_json_to_duckdb(url, con):
@@ -27,25 +24,6 @@ def download_json_to_duckdb(url, con):
     con.sql(
         f"INSERT OR IGNORE INTO datalake.loaded_tables(table_name, last_update) VALUES('{table_name}', '{_last_update}');"
     )
-
-
-def prepare_db():
-    try:
-        with open(os.path.join(home_dir, ".motherduck_token")) as f:
-            md_token = f.read()
-    except Exception:
-        md_token = os.getenv("MD_TOKEN")
-
-    con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
-    con.sql("CREATE DATABASE IF NOT EXISTS dwd")
-    con.sql("USE dwd")
-    con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
-    con.sql(
-        """
-        CREATE TABLE IF NOT EXISTS datalake.loaded_tables(table_name VARCHAR PRIMARY KEY, last_update timestamp, inserttimestamptz TIMESTAMPTZ DEFAULT GET_CURRENT_TIMESTAMP());
-    """
-    )
-    return con
 
 
 def save_database():
