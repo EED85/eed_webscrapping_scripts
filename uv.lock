@@ -63,9 +63,10 @@ wheels = [
 [[package]]
 name = "eed-webscrapping-scripts"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "duckdb" },
+    { name = "pyyaml" },
 ]
 
 [package.dev-dependencies]
@@ -75,7 +76,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "duckdb", specifier = ">=1.2.0" }]
+requires-dist = [
+    { name = "duckdb", specifier = ">=1.2.0" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+]
 
 [package.metadata.requires-dev]
 dev = [

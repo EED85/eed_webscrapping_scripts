@@ -8,11 +8,11 @@ just use `uv run --python 3.11 main.py`
 Please install the repo
 ```shell
 gh repo clone EED85/eed_webscrapping_scripts
-uv pip install
+uv venv .venv
 uv pip install e .
 uvx pre-commit install
 ```
-
+Please always create a pr before making changes
 
 
 ## Details
