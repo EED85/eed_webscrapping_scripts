@@ -1,6 +1,8 @@
 import duckdb
 import os
+import eed_webscrapping_scripts
 
+print(eed_webscrapping_scripts.__path__)
 home_dir = os.path.expanduser("~")
 
 
