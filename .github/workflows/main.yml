@@ -17,6 +17,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install uv
+          pip install -e .
       - name: Run script
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
