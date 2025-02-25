@@ -3,7 +3,21 @@ name = "eed-webscrapping-scripts"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+authors = [
+    { name = "EED85", email = "eric.brahmann@eed-solutions.de" }
+]
 requires-python = ">=3.10"
 dependencies = [
     "duckdb>=1.2.0",
+    "pyyaml>=6.0.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.1.0",
+    "ruff>=0.9.7",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

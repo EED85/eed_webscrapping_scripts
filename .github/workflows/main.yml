@@ -21,4 +21,4 @@ jobs:
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
         run: |
-          uv run --python 3.11 main.py
+          uv run --python 3.11 src\eed_webscrapping_scripts\main.py
