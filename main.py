@@ -5,7 +5,6 @@ home_dir = os.path.expanduser("~")
 
 
 def download_json_to_duckdb(url, con):
-
     sql_date = f"""
                 WITH _date AS (
                     SELECT
@@ -35,7 +34,7 @@ def prepare_db():
         with open(os.path.join(home_dir, ".motherduck_token")) as f:
             md_token = f.read()
     except Exception:
-        md_token = os.getenv('MD_TOKEN')
+        md_token = os.getenv("MD_TOKEN")
 
     con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
     con.sql("CREATE DATABASE IF NOT EXISTS dwd")
