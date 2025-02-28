@@ -10,7 +10,7 @@ def create_views():
     _tables = con.sql(sql).fetchall()
     tables = [item[0] for item in _tables]
     sql_union_view_base = " UNION BY NAME ".join(
-        [f"FROM {datalake}.{table}" for table in tables]
+        [f"SELECT *, '{table}' AS _table_ FROM {datalake}.{table}" for table in tables]
     )
     sql_union_view = f"CREATE OR REPLACE VIEW {datalake}.Pollenflug_Gefahrenindex AS ({sql_union_view_base})"
     con.sql(sql_union_view)
