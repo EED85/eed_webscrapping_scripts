@@ -7,4 +7,4 @@ WITH _tables AS (
 )
 SELECT
   * REPLACE(COALESCE(in_dwd_db, FALSE) AS in_dwd_db, COALESCE(in_loaded_tables, FALSE) AS in_loaded_tables )
-FROM _tables INNER JOIN _tables_loaded USING(table_name);
+FROM _tables INNER JOIN _tables_loaded USING(table_name)
