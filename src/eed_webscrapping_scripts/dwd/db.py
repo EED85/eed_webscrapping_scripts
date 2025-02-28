@@ -1,17 +1,8 @@
-import os
-import duckdb
-
-home_dir = os.path.expanduser("~")
+from eed_webscrapping_scripts.modules import connect_to_db
 
 
-def prepare_db():
-    try:
-        with open(os.path.join(home_dir, ".motherduck_token")) as f:
-            md_token = f.read()
-    except Exception:
-        md_token = os.getenv("MD_TOKEN")
-
-    con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
+def prepare_db(con=None):
+    con = con or connect_to_db()
     con.sql("CREATE DATABASE IF NOT EXISTS dwd")
     con.sql("USE dwd")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
