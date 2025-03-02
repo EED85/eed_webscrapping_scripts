@@ -19,8 +19,16 @@ def create_views():
     con.sql(sql_union_view)
 
     # create views for information layer
-    sql = read_sql_file("dwd\sqls\information_layer_view.sql", cfg["git_root"])
+    sql = read_sql_file("dwd\sqls\information_layer_view_base.sql", cfg["git_root"])
     sql_view = f"CREATE OR REPLACE VIEW {information_layer}.Pollenflug_Gefahrenindex_base AS ({sql})"
+    con.sql(sql_view)
+
+    sql = read_sql_file("dwd\sqls\information_layer_view.sql", cfg["git_root"])
+    sql_view = f"CREATE OR REPLACE VIEW {information_layer}.Pollenflug_Gefahrenindex AS ({sql})"
+    con.sql(sql_view)
+
+    sql = read_sql_file("dwd\sqls\information_layer_view_unpivot.sql", cfg["git_root"])
+    sql_view = f"CREATE OR REPLACE VIEW {information_layer}.Pollenflug_Gefahrenindex_unpivot AS ({sql})"
     con.sql(sql_view)
 
 
