@@ -1,0 +1,1 @@
+{"resources":{"src/eed_webscrapping_scripts/dwd/local_duckdb/download_md.sql":{"default-datasource":"duckdb_jdbc-19555999452-680a60560c8c0a41","default-catalog":"memory"},"src/eed_webscrapping_scripts/dwd/local_duckdb/playground.sql":{"default-datasource":"duckdb_jdbc-19555c5b665-5adfe722f6515611","default-catalog":"dwd"}}}
