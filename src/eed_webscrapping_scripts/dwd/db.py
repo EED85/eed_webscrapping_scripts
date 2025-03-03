@@ -6,6 +6,7 @@ def prepare_db(con=None):
     con.sql("CREATE DATABASE IF NOT EXISTS dwd")
     con.sql("USE dwd")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
+    con.sql("CREATE SCHEMA IF NOT EXISTS information_layer")
     con.sql(
         """
         CREATE TABLE IF NOT EXISTS datalake.loaded_tables(table_name VARCHAR PRIMARY KEY, last_update timestamp, inserttimestamptz TIMESTAMPTZ DEFAULT GET_CURRENT_TIMESTAMP());
