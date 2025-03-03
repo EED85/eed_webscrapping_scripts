@@ -1,0 +1,49 @@
+{
+	"folders": {},
+	"connections": {
+		"duckdb_jdbc-19555999452-680a60560c8c0a41": {
+			"provider": "generic",
+			"driver": "duckdb_jdbc",
+			"name": "memory",
+			"save-password": true,
+			"configuration": {
+				"database": ":memory:",
+				"url": "jdbc:duckdb::memory:",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
+		},
+		"duckdb_jdbc-19555c5b665-5adfe722f6515611": {
+			"provider": "generic",
+			"driver": "duckdb_jdbc",
+			"name": "dwd.duckdb",
+			"save-password": true,
+			"configuration": {
+				"database": "C:\\dev\\github\\EED85\\eed_webscrapping_scripts\\src\\eed_webscrapping_scripts\\dwd\\local_duckdb\\dwd.duckdb",
+				"url": "jdbc:duckdb:C:\\dev\\github\\EED85\\eed_webscrapping_scripts\\src\\eed_webscrapping_scripts\\dwd\\local_duckdb\\dwd.duckdb",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": true,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800,
+			"auto-close-connections": true,
+			"close-connections-period": 14400
+		}
+	}
+}
