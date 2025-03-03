@@ -1,2 +1,7 @@
 pollenflug_gefahrenindex:
   url: "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
+  db_infos:
+    db: "dwd"
+    datalake: "datalake"
+    information_layer: "information_layer"
+git_root: ""

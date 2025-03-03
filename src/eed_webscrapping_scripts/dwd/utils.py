@@ -29,12 +29,12 @@ def download_json_to_duckdb(url, con):
 
 
 def get_config():
-    path_to_config = os.path.join(
-        eed_webscrapping_scripts.__path__[0], "dwd", "config.yaml"
-    )
+    git_root = eed_webscrapping_scripts.__path__[0]
+    path_to_config = os.path.join(git_root, "dwd", "config.yaml")
 
     with open(path_to_config, "r") as file:
         cfg = yaml.safe_load(file)
+    cfg["git_root"] = git_root
     return cfg
 
 
