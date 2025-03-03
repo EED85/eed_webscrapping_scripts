@@ -1,5 +1,5 @@
 (
-	FROM dwd.information_layer.Pollenflug_Gefahrenindex_base
+	FROM dwd.information_layer.Pollenflug_Gefahrenindex_01_base
 	SELECT region_name,
 		region_id,
 		partregion_name,
@@ -18,7 +18,7 @@
 )
 UNION
 BY NAME (
-	FROM dwd.information_layer.Pollenflug_Gefahrenindex_base
+	FROM dwd.information_layer.Pollenflug_Gefahrenindex_01_base
 	SELECT region_name,
 		region_id,
 		partregion_name,
@@ -37,7 +37,7 @@ BY NAME (
 )
 UNION
 BY NAME (
-	FROM dwd.information_layer.Pollenflug_Gefahrenindex_base
+	FROM dwd.information_layer.Pollenflug_Gefahrenindex_01_base
 	SELECT region_name,
 		region_id,
 		partregion_name,
