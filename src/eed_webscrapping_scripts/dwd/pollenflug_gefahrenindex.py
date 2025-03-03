@@ -2,6 +2,7 @@ from eed_webscrapping_scripts.dwd import prepare_db
 from eed_webscrapping_scripts.dwd import download_json_to_duckdb
 from eed_webscrapping_scripts.dwd import get_config
 from eed_webscrapping_scripts.modules import read_sql_file
+from pathlib import Path
 
 
 def pollenflug_gefahrenindex():
@@ -17,7 +18,9 @@ def pollenflug_gefahrenindex():
     print("ENDE pollenflug_gefahrenindex")
 
     # create views for datalake
-    sql = read_sql_file("dwd\sqls\list_available_tables.sql", cfg["git_root"])
+    sql = read_sql_file(
+        Path("dwd", "sqls", "list_available_tables.sql"), cfg["git_root"]
+    )
     _tables = con.sql(sql).fetchall()
     tables = [item[0] for item in _tables]
     sql_union_view_base = " UNION BY NAME ".join(
