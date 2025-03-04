@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 def pollenflug_gefahrenindex():
+    """Downloads the Pollenflug Gefaherenindex from DWD and stores the results in a database."""
     print("START pollenflug_gefahrenindex")
     # set parameters
     cfg = get_config()
