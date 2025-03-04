@@ -9,11 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - id: checkout_latest_release
-        uses: pozetroninc/github-action-get-latest-release@master
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get latest release tag
+        id: get-latest-release
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "::set-output name=tag::$latest_tag"
+      - name: Checkout latest release
+        uses: actions/checkout@v2
         with:
-          repository: ${{ github.repository }}
-          excludes: prerelease, draft
+          ref: ${{ steps.get-latest-release.outputs.tag }}
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
         with:
