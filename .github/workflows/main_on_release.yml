@@ -38,4 +38,4 @@ jobs:
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
         run: |
-          uv run src/eed_webscrapping_scripts/create_views.py
+          uv run src/eed_webscrapping_scripts/dwd/create_views.py
