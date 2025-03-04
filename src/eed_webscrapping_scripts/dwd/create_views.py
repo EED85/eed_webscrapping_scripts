@@ -4,6 +4,11 @@ from pathlib import Path
 
 
 def create_views():
+    """Creates Views on the raw data.
+
+    Raises:
+        SyntaxError: Error Handler on creating views in the database.
+    """
     cfg = get_config()
     information_layer = cfg["pollenflug_gefahrenindex"]["db_infos"]["information_layer"]
     con = prepare_db()

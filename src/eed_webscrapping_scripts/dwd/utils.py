@@ -3,7 +3,14 @@ import os
 import yaml
 
 
-def download_json_to_duckdb(url, con):
+def download_json_to_duckdb(url: str, con):
+    """Downloads json form the api ``url``.
+    Creates a table ``Pollenflug_Gefahrenindex_{date}``.
+    Loggs the download in the table ``loaded_tables``.
+    Args:
+        url (str): _description_
+        con (Duckdb / Motherduck connection): Needs to have dwd has current database,
+    """
     sql_date = f"""
                 WITH _date AS (
                     SELECT
@@ -28,7 +35,13 @@ def download_json_to_duckdb(url, con):
     )
 
 
-def get_config():
+def get_config() -> dict:
+    """Generates a dict based on ``config.yaml``.
+    These parameters are used in the whole programm to pass Variables between programms.
+
+    Returns:
+        dict: _description_
+    """
     git_root = eed_webscrapping_scripts.__path__[0]
     path_to_config = os.path.join(git_root, "dwd", "config.yaml")
 
