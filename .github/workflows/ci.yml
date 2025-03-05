@@ -24,3 +24,5 @@ jobs:
           uv sync
       - name: run ruff
         uses: astral-sh/ruff-action@v3
+      - run: ruff check --fix
+      - run: ruff format
