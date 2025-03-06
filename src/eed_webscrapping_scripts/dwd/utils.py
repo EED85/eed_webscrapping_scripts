@@ -1,6 +1,8 @@
-import eed_webscrapping_scripts
 import os
+
 import yaml
+
+import eed_webscrapping_scripts
 
 
 def download_json_to_duckdb(url: str, con):
@@ -31,7 +33,9 @@ def download_json_to_duckdb(url: str, con):
     """
     )
     con.sql(
-        f"INSERT OR IGNORE INTO datalake.loaded_tables(table_name, last_update) VALUES('{table_name}', '{_last_update}');"
+        f"""INSERT OR IGNORE INTO datalake.loaded_tables(table_name, last_update)
+            VALUES('{table_name}', '{_last_update}')
+        ;"""
     )
 
 
@@ -45,7 +49,7 @@ def get_config() -> dict:
     git_root = eed_webscrapping_scripts.__path__[0]
     path_to_config = os.path.join(git_root, "dwd", "config.yaml")
 
-    with open(path_to_config, "r") as file:
+    with open(path_to_config) as file:
         cfg = yaml.safe_load(file)
     cfg["git_root"] = git_root
     return cfg
