@@ -1,4 +1,5 @@
 import os
+
 import duckdb
 
 home_dir = os.path.expanduser("~")
@@ -16,7 +17,7 @@ def read_sql_file(path_to_file: str, git_root: str = None) -> str:
     """
     git_root = git_root or ""
     path_to_file = os.path.join(git_root, path_to_file)
-    with open(path_to_file, "r") as file:
+    with open(path_to_file) as file:
         sql = file.read()
     return sql
 
