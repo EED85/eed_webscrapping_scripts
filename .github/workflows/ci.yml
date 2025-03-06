@@ -25,4 +25,4 @@ jobs:
       - name: set up ruff
         uses: astral-sh/ruff-action@v3
       - name: Run Ruff
-        run: ruff check --output-format=github .
+        run: uv run ruff check "src"--output-format=github .
