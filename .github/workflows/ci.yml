@@ -14,10 +14,6 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .python-version
       - name: set up ruff
         uses: astral-sh/ruff-action@v3
       - name: Run Ruff
