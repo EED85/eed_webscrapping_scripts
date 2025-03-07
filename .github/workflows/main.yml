@@ -1,14 +1,27 @@
+name: daily scrapping
+
 on:
   schedule:
     - cron: 0 14 * * *
   workflow_dispatch:
 
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+      - name: Get latest release tag
+        id: get-latest-release
+        run: |
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main)) && echo "{name}={$latest_tag}" >> $GITHUB_OUTPUT
+      - name: Checkout latest release
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get-latest-release.outputs.tag }}
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
         with:
@@ -20,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
+          uv sync
       - name: Run script
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
