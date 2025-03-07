@@ -1,0 +1,7 @@
+pollenflug_gefahrenindex:
+  url: ""
+  db_infos:
+    db: "dwd"
+    datalake: "datalake"
+    information_layer: "information_layer"
+git_root: ""

@@ -1,19 +1,14 @@
-from unittest.mock import patch
+from pathlib import Path
 
 import pytest
 import yaml
 
-# import eed_webscrapping_scripts
-
-
-# Mock function to replace load_config
-def mock_get_config():
-    with open("config.yaml") as file:
-        return yaml.safe_load(file)
-
 
 # Fixture to use the mock_load_config function
 @pytest.fixture
-def get_config_test():
-    with patch("eed_webscrapping_scripts.dwd.get_config", side_effect=mock_get_config):
-        yield mock_get_config
+def patch_get_config_dwd(monkeypatch):
+    def get_config_dwd_mock():
+        with open(Path("tests") / "dwd" / "config.yaml") as file:
+            return yaml.safe_load(file)
+
+    monkeypatch.setattr("eed_webscrapping_scripts.dwd.get_config", get_config_dwd_mock)
