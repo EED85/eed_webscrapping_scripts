@@ -1,8 +1,6 @@
-import os
-
 import yaml
 
-import eed_webscrapping_scripts
+from eed_webscrapping_scripts.modules import get_git_root
 
 
 def download_json_to_duckdb(url: str, con):
@@ -46,14 +44,11 @@ def get_config() -> dict:
     Returns:
         dict: _description_
     """
-    git_root = eed_webscrapping_scripts.__path__[0]
-    path_to_config = os.path.join(git_root, "dwd", "config.yaml")
+    cfg = {}
+    git_root = get_git_root() / "src" / "eed_webscrapping_scripts"
+    path_to_config = git_root / "dwd" / "config.yaml"
 
     with open(path_to_config) as file:
         cfg = yaml.safe_load(file)
     cfg["git_root"] = git_root
     return cfg
-
-
-if __name__ == "__main__":
-    get_config()

@@ -1,4 +1,4 @@
-from eed_webscrapping_scripts.dwd import pollenflug_gefahrenindex
+from eed_webscrapping_scripts.dwd.pollenflug_gefahrenindex import pollenflug_gefahrenindex
 
 
 def main():
