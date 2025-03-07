@@ -23,4 +23,4 @@ jobs:
             uv sync
         - name: Run pytests
           run: |
-            echo "tbd"
+            uv run pytest tests
