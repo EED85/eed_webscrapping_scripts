@@ -20,3 +20,17 @@ uv pip install e .
 uvx pre-commit install
 ```
 Please ensure to create a pull request before making any changes.
+
+## Pipelines
+
+### ruff
+runs on every commit and fails, if code is not well formated
+
+### pytests
+runs on every commit and fails, if any pytest fails
+
+### create views on release
+When a tag is pushed to the main master, then all database views are beeing recreated.
+
+### daily scrapping
+runs daily main.py and scrappes data

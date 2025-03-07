@@ -1,11 +1,11 @@
-name: ci
+name: ruff
 
 on:
   push:
   workflow_dispatch:
 
 jobs:
-  ruff:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
