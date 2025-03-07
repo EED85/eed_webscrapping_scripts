@@ -1,8 +1,10 @@
-on:
-    workflow_dispatch:
+name: pytests
 
-  jobs:
-    build:
+on:
+    push:
+    workflow_dispatch:
+jobs:
+    testing:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout code
