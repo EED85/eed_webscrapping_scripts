@@ -19,9 +19,9 @@ jobs:
       - name: Get latest release tag
         id: get-latest-release
         run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1)) && echo "{name}={$latest_tag}" >> $GITHUB_OUTPUT
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main)) && echo "{name}={$latest_tag}" >> $GITHUB_OUTPUT
       - name: Checkout latest release
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ steps.get-latest-release.outputs.tag }}
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
