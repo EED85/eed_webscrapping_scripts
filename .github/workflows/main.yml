@@ -17,6 +17,9 @@ jobs:
       - uses: opt-nc/setup-duckdb-action@v1.0.8
         with:
           version: v1.2.0
+      - name: Create a file
+        run: |
+          echo "a" > a.txt
       - name: Get latest release tag
         id: get-latest-release
         run: |
