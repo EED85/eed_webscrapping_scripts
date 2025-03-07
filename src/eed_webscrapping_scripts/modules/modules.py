@@ -1,6 +1,8 @@
 import os
+from pathlib import Path
 
 import duckdb
+import git
 
 home_dir = os.path.expanduser("~")
 
@@ -37,3 +39,17 @@ def connect_to_db():
 
     con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
     return con
+
+
+def get_git_root(path=None):
+    """_summary_
+
+    Args:
+        path (str / Path, optional): _description_. Defaults to cwd.
+    Returns:
+        Path: finds top level git repository path of input ``path``.
+    """
+    path = path or Path.cwd()
+    git_repo = git.Repo(path, search_parent_directories=True)
+    git_root = Path(git_repo.git.rev_parse("--show-toplevel"))
+    return git_root
