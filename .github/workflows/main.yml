@@ -14,10 +14,15 @@ jobs:
         with:
           fetch-tags: true
           fetch-depth: 0
+      - uses: opt-nc/setup-duckdb-action@v1.0.8
+        with:
+          version: v1.2.0
       - name: Get latest release tag
         id: get-latest-release
         run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main)) && echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+          git tag --merged main --sort=taggerdate --list *.*.* > tags.txt
+          duckdb -c "COPY (FROM read_csv(tags.txt, header=false) ORDER BY row_number() OVER(PARTITION BY NULL) DESC LIMIT 1) TO 'latest_tag.txt' WITH (FORMAT CSV, HEADER FALSE)"
+          latest_tag=$(cat latest_tag.txt) && echo "tag=$latest_tag" >> $GITHUB_OUTPUT
           echo $latest_tag
       - name: Checkout latest release
         uses: actions/checkout@v4
