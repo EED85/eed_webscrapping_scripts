@@ -17,13 +17,10 @@ jobs:
       - uses: opt-nc/setup-duckdb-action@v1.0.8
         with:
           version: v1.2.0
-      - name: Create a file
-        run: |
-          echo "a" > a.txt
       - name: Get latest release tag
         id: get-latest-release
         run: |
-          latest_tag=$(git tag --merged main --sort=taggerdate --list *.*.* | duckdb -c "COPY (FROM read_csv('/dev/stdin', header=false) ORDER BY row_number() OVER(PARTITION BY NULL) DESC LIMIT 1) TO '/dev/stdout/' WITH (FORMAT CSV, HEADER FALSE)")
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main) --abbrev=0)
           echo "tag=$latest_tag" >> $GITHUB_OUTPUT
           echo $latest_tag
       - name: Checkout latest release
