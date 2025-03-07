@@ -17,7 +17,7 @@ jobs:
       - name: Get latest release tag
         id: get-latest-release
         run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main)) && echo "{name}={$latest_tag}" >> $GITHUB_OUTPUT
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main)) && echo "tag=$latest_tag" >> $GITHUB_OUTPUT
       - name: Checkout latest release
         uses: actions/checkout@v4
         with:
