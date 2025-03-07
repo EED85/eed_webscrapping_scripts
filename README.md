@@ -19,4 +19,4 @@ uv venv .venv
 uv pip install e .
 uvx pre-commit install
 ```
-Please ensure to create a pull request before making any changes.
+Please ensure to create a pull request before making any changes
