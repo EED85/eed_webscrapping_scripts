@@ -20,9 +20,8 @@ jobs:
       - name: Get latest release tag
         id: get-latest-release
         run: |
-          git tag --merged "main" --sort=taggerdate --list *.*.* > tags.txt
-          duckdb -c "COPY (FROM read_csv(tags.txt, header=false) ORDER BY row_number() OVER(PARTITION BY NULL) DESC LIMIT 1) TO 'latest_tag.txt' WITH (FORMAT CSV, HEADER FALSE)"
-          latest_tag=$(cat latest_tag.txt) && echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+          latest_tag=$(git tag --merged main --sort=taggerdate --list *.*.* | duckdb -c "COPY (FROM read_csv('/dev/stdin', header=false) ORDER BY row_number() OVER(PARTITION BY NULL) DESC LIMIT 1) TO '/dev/stdout/' WITH (FORMAT CSV, HEADER FALSE)")
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
           echo $latest_tag
       - name: Checkout latest release
         uses: actions/checkout@v4
