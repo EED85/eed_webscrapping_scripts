@@ -13,7 +13,7 @@ def pollenflug_gefahrenindex():
     datalake = cfg["pollenflug_gefahrenindex"]["db_infos"]["datalake"]
 
     # download data
-    con = prepare_db()
+    con = prepare_db(cfg)
     download_json_to_duckdb(url, con)
     print("ENDE pollenflug_gefahrenindex")
 

@@ -10,6 +10,7 @@ Data is collected daily via GitHub Actions and stored in a private database for 
 ## running the script
 To run the script, use:
 `uv run rc/eed_webscrapping_scripts/main.py`
+Please note, that the programm runs locally, the data is not stored in motherduck, only in a local in memory duckdb database.
 
 ## Developement
 To install the repository, follow these steps:
@@ -34,3 +35,7 @@ When a tag is pushed to the main master, then all database views are beeing recr
 
 ### daily scrapping
 runs daily main.py and scrappes data
+
+#### Developement
+add if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
+before step Checkout latest release for developement puposese
