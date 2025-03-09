@@ -9,6 +9,7 @@ def pollenflug_gefahrenindex():
     print("START pollenflug_gefahrenindex")
     # set parameters
     cfg = get_config()
+    print(f"""{cfg["env"]["_ENVIRONMENT_"]=}""")
     url = cfg["pollenflug_gefahrenindex"]["url"]
     datalake = cfg["pollenflug_gefahrenindex"]["db_infos"]["datalake"]
 
