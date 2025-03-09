@@ -42,5 +42,8 @@ jobs:
       - name: Run script
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
+          RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
         run: |
+          runs_on_ga=$(uvx python -c "import os; print(os.getenv('RUNS_ON_GA'))")
+          echo $runs_on_ga
           uv run src/eed_webscrapping_scripts/main.py
