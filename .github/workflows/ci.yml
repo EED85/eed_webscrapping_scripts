@@ -12,8 +12,8 @@ jobs:
         uses: actions/checkout@v4
       - name: echo environment
         run: echo ${{ github.ref }} && echo ${{ github.base_ref }} && echo ${{ github.head_ref }}
-      - name: if base is master
-        if: ${{ github.ref == 'refs/heads/ES-269-update-create-views-ci-ii' }}
+      - name: if base is main
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: echo hat geklappt
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
