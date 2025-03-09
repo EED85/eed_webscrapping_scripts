@@ -24,7 +24,6 @@ jobs:
           echo "tag=$latest_tag" >> $GITHUB_OUTPUT
           echo $latest_tag
       - name: Checkout latest release
-        : # if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
         uses: actions/checkout@v4
         with:
           ref: ${{ steps.get-latest-release.outputs.tag }}
