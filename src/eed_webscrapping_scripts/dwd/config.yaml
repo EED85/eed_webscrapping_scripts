@@ -5,3 +5,5 @@ pollenflug_gefahrenindex:
     datalake: "datalake"
     information_layer: "information_layer"
 git_root: ""
+env:
+  _ENVIRONMENT_: ""

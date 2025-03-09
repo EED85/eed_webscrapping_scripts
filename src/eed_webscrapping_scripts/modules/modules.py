@@ -3,9 +3,14 @@ from pathlib import Path
 
 import duckdb
 import git
+import dotenv
+# loading variables from .env file
+
 
 home_dir = os.path.expanduser("~")
 
+def load_dotenv_():
+    dotenv.load_dotenv()
 
 def read_sql_file(path_to_file: str, git_root: str = None) -> str:
     """_summary_
