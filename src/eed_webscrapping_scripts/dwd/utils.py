@@ -1,7 +1,9 @@
-import yaml
-from eed_webscrapping_scripts.modules import get_git_root
-from eed_webscrapping_scripts.modules import load_dotenv_
 import os
+
+import yaml
+
+from eed_webscrapping_scripts.modules import get_git_root, load_dotenv_
+
 
 def download_json_to_duckdb(url: str, con):
     """Downloads json form the api ``url``.
