@@ -10,6 +10,7 @@ Data is collected daily via GitHub Actions and stored in a private database for 
 ## running the script
 To run the script, use:
 `uv run rc/eed_webscrapping_scripts/main.py`
+Please note, that the programm runs locally, the data is not stored in motherduck, only in a local in memory duckdb database.
 
 ## Developement
 To install the repository, follow these steps:
