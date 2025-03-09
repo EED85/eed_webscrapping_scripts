@@ -7,3 +7,4 @@ pollenflug_gefahrenindex:
 git_root: ""
 env:
   _ENVIRONMENT_: ""
+runs_on_ga: False

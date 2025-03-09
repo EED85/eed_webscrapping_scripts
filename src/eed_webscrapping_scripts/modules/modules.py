@@ -32,20 +32,27 @@ def read_sql_file(path_to_file: str, git_root: str = None) -> str:
     return sql
 
 
-def connect_to_db():
+def connect_to_db(cfg=None):
     """Connects to Motherduck database.
     Needs Github secret ``MD_TOKEN`` defined, if used in github Actions.
     Needs ``.motherduck_token`` file in your home directory.
     Returns:
         DuckDB / Motherduck connection:
     """
-    try:
-        with open(os.path.join(home_dir, ".motherduck_token")) as f:
-            md_token = f.read()
-    except Exception:
-        md_token = os.getenv("MD_TOKEN")
+    if cfg["env"]["_ENVIRONMENT_"] == "GITHUB":
+        try:
+            with open(os.path.join(home_dir, ".motherduck_token")) as f:
+                md_token = f.read()
+        except Exception:
+            md_token = os.getenv("MD_TOKEN")
 
-    con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
+        con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
+        print("Connected to Motherduck")
+    else:
+        con = duckdb.connect()
+        con.sql("ATTACH ':memory:' AS dwd;")
+        con.sql("USE dwd")
+        print("Connected to in memory duckdb database")
     return con
 
 

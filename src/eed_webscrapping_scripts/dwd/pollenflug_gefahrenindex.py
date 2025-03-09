@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from eed_webscrapping_scripts.dwd import download_json_to_duckdb, get_config, prepare_db
@@ -7,16 +6,14 @@ from eed_webscrapping_scripts.modules import read_sql_file
 
 def pollenflug_gefahrenindex():
     """Downloads the Pollenflug Gefaherenindex from DWD and stores the results in a database."""
-    print("--START pollenflug_gefahrenindex--")
+    print("START pollenflug_gefahrenindex")
     # set parameters
     cfg = get_config()
-    print(f"""_ENVIRONMENT_={os.getenv("_ENVIRONMENT_")}""")
-    print(f"""{cfg["env"]["_ENVIRONMENT_"]=}""")
     url = cfg["pollenflug_gefahrenindex"]["url"]
     datalake = cfg["pollenflug_gefahrenindex"]["db_infos"]["datalake"]
 
     # download data
-    con = prepare_db()
+    con = prepare_db(cfg)
     download_json_to_duckdb(url, con)
     print("ENDE pollenflug_gefahrenindex")
 
