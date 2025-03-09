@@ -7,7 +7,7 @@ from eed_webscrapping_scripts.modules import read_sql_file
 
 def pollenflug_gefahrenindex():
     """Downloads the Pollenflug Gefaherenindex from DWD and stores the results in a database."""
-    print("START pollenflug_gefahrenindex")
+    print("--START pollenflug_gefahrenindex--")
     # set parameters
     cfg = get_config()
     print(f"""_ENVIRONMENT_={os.getenv("_ENVIRONMENT_")}""")
