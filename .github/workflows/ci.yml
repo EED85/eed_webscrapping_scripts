@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: echo environmant
+        run: echo ${{ github.ref }} && echo ${{ github.base_ref }}
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
         with:
