@@ -12,21 +12,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: echo env
-        run: echo ${{ github.ref_type }} && echo ${{ github.ref }}
+      - name: get current branch
+        id: get-current-branch
+        run: |
+          branch=$(git branch --show-current) && echo "branch=$branch" >> $GITHUB_OUTPUT
+          echo "branch=$branch"
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
+        if: ${{ steps.get-current-branch.outputs.branch == 'main'}}
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
       - name: Setup Python
+        if: ${{ steps.get-current-branch.outputs.branch == 'main'}}
         uses: actions/setup-python@v5
         with:
           python-version-file: .python-version
       - name: Install dependencies
+        if: ${{ steps.get-current-branch.outputs.branch == 'main'}}
         run: |
           python -m pip install --upgrade pip
           uv sync
       - name: Run script
+        if: ${{ steps.get-current-branch.outputs.branch == 'main'}}
         env:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
         run: |
