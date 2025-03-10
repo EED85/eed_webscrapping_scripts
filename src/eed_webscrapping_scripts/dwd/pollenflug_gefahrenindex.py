@@ -28,6 +28,7 @@ def pollenflug_gefahrenindex():
         f"CREATE OR REPLACE VIEW {datalake}.Pollenflug_Gefahrenindex AS ({sql_union_view_base})"
     )
     con.sql(sql_union_view)
+    return con
 
 
 if __name__ == "__main__":
