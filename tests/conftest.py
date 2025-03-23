@@ -30,7 +30,7 @@ def get_encryption_result(home_dir) -> bytes:
             encryption_result = f.read()
     except Exception:
         encryption_result = os.getenv("ENCRYPTION_RESULT")  # TODO
-    return encryption_result.encode()
+    return bytes(encryption_result, encoding="utf-8")
 
 
 @pytest.fixture
