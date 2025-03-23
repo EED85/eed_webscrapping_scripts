@@ -103,7 +103,7 @@ def get_encryption_salt() -> bytes:
             encryption_salt = f.read()
     except Exception:
         encryption_salt = os.getenv("ENCRYPTION_SALT")  # TODO
-    return encryption_salt.encode()
+    return bytes(encryption_salt, encoding="utf-8")
 
 
 def generate_key(password: str) -> bytes:
@@ -118,12 +118,6 @@ def generate_key(password: str) -> bytes:
     key = base64.urlsafe_b64encode(password_kdf)
 
     return key
-    # f = Fernet(key)
-    # token = f.encrypt(b"Secret message!")
-    # token
-    # b'...'
-    # f.decrypt(token)
-    # b'Secret message!'
 
 
 def encrypt(phrase: str, key) -> str:

@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from eed_webscrapping_scripts.modules import generate_key, get_encryption_pasword
+from eed_webscrapping_scripts.modules import get_encryption_pasword
 
 
 # Fixture to use the mock_load_config function
@@ -37,10 +37,9 @@ def get_encryption_result(home_dir) -> bytes:
 def cfg_test():
     home_dir = os.path.expanduser("~")
     password = get_encryption_pasword()
-    key = generate_key(password)
     encryption_result = get_encryption_result(home_dir)
     cfg_test = {
         "home_dir": home_dir,
-        "encrytpion": {"password": password, "key": key, "result": encryption_result},
+        "encrytpion": {"password": password, "result": encryption_result},
     }
     yield cfg_test
