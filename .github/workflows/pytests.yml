@@ -25,6 +25,7 @@ jobs:
           env:
             ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
             ENCRYPTION_PASWORD: ${{ secrets.ENCRYPTION_PASWORD }}
+            ENCRYPTION_RESULT: ${{ secrets.ENCRYPTION_RESULT }}
             RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
             _ENVIRONMENT_: ${{ vars._ENVIRONMENT_ }}
           run: |
