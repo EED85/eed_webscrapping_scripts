@@ -1,9 +1,13 @@
+import base64
 import os
 from pathlib import Path
 
 import dotenv
 import duckdb
 import git
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 # loading variables from .env file
 
@@ -68,3 +72,67 @@ def get_git_root(path=None):
     git_repo = git.Repo(path, search_parent_directories=True)
     git_root = Path(git_repo.git.rev_parse("--show-toplevel"))
     return git_root
+
+
+def get_encryption_pasword() -> str:
+    """Reads password either from disk or from a github secret.
+
+    Args:
+
+    Returns:
+        str: password -> use it in functions encrypt and decrypt
+    """
+    try:
+        with open(os.path.join(home_dir, ".encryption_key")) as f:
+            encryption_pasword = f.read()
+    except Exception:
+        encryption_pasword = os.getenv("ENCRYPTION_PASWORD")  # TODO
+    return encryption_pasword
+
+
+def get_encryption_salt() -> bytes:
+    """Reads password either from disk or from a github secret.
+
+    Args:
+
+    Returns:
+        str: password -> use it in functions encrypt and decrypt
+    """
+    try:
+        with open(os.path.join(home_dir, ".encryption_salt")) as f:
+            encryption_salt = f.read()
+    except Exception:
+        encryption_salt = os.getenv("ENCRYPTION_SALT")  # TODO
+    return encryption_salt.encode()
+
+
+def generate_key(password: str) -> bytes:
+    salt = get_encryption_salt()
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=1_200_000,
+    )
+    password_kdf = kdf.derive(password.encode("utf-8"))
+    key = base64.urlsafe_b64encode(password_kdf)
+
+    return key
+    # f = Fernet(key)
+    # token = f.encrypt(b"Secret message!")
+    # token
+    # b'...'
+    # f.decrypt(token)
+    # b'Secret message!'
+
+
+def encrypt(phrase: str, key) -> str:
+    fernet = Fernet(key)
+    enc_phrase = fernet.encrypt(phrase.encode())
+    return enc_phrase
+
+
+def decrypt(enc_phrase: str, key, encoding: str = "utf-8") -> str:
+    fernet = Fernet(key)
+    phrase = fernet.decrypt(enc_phrase)
+    return phrase.decode(encoding)

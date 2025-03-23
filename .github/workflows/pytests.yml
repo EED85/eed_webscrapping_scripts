@@ -22,5 +22,10 @@ jobs:
             python -m pip install --upgrade pip
             uv sync
         - name: Run pytests
+          env:
+            ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+            ENCRYPTION_PASWORD: ${{ secrets.ENCRYPTION_PASWORD }}
+            RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
+            _ENVIRONMENT_: ${{ vars._ENVIRONMENT_ }}
           run: |
             uv run pytest tests
