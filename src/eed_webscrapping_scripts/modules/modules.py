@@ -130,3 +130,8 @@ def decrypt(enc_phrase: str, key, encoding: str = "utf-8") -> str:
     fernet = Fernet(key)
     phrase = fernet.decrypt(enc_phrase)
     return phrase.decode(encoding)
+
+
+if __name__ == "__main__":
+    encryptd_phrase = encrypt("123", generate_key(get_encryption_pasword()))
+    pass
