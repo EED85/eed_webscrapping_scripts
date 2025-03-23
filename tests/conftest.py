@@ -1,4 +1,5 @@
 import os
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -17,29 +18,12 @@ def patch_get_config_dwd(monkeypatch):
     monkeypatch.setattr("eed_webscrapping_scripts.dwd.get_config", get_config_dwd_mock)
 
 
-def get_encryption_result(home_dir) -> bytes:
-    """Reads password either from disk or from a github secret.
-
-    Args:
-
-    Returns:
-        str: password -> use it in functions encrypt and decrypt
-    """
-    try:
-        with open(os.path.join(home_dir, ".encryption_result")) as f:
-            encryption_result = f.read()
-    except Exception:
-        encryption_result = os.getenv("ENCRYPTION_RESULT")  # TODO
-    return bytes(encryption_result, encoding="utf-8")
-
-
 @pytest.fixture
-def cfg_test():
+def cfg_test() -> Iterator[dict]:
     home_dir = os.path.expanduser("~")
     password = get_encryption_pasword()
-    encryption_result = get_encryption_result(home_dir)
     cfg_test = {
         "home_dir": home_dir,
-        "encrytpion": {"password": password, "result": encryption_result},
+        "encrytpion": {"password": password},
     }
     yield cfg_test

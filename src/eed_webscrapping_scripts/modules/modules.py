@@ -102,7 +102,7 @@ def get_encryption_salt() -> bytes:
         with open(os.path.join(home_dir, ".encryption_salt")) as f:
             encryption_salt = f.read()
     except Exception:
-        encryption_salt = os.getenv("ENCRYPTION_SALT")  # TODO
+        encryption_salt = os.getenv("ENCRYPTION_SALT")
     return bytes(encryption_salt, encoding="utf-8")
 
 
