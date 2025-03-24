@@ -103,7 +103,7 @@ def get_encryption_salt() -> bytes:
             encryption_salt = f.read()
     except Exception:
         encryption_salt = os.getenv("ENCRYPTION_SALT")
-    return bytes(encryption_salt, encoding="utf-8")
+    return bytes(encryption_salt.strip(), encoding="utf-8")
 
 
 def generate_key(password: str) -> bytes:
