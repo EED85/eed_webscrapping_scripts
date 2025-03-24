@@ -87,7 +87,7 @@ def get_encryption_pasword() -> str:
             encryption_pasword = f.read()
     except Exception:
         encryption_pasword = os.getenv("ENCRYPTION_PASWORD")  # TODO
-    return encryption_pasword
+    return encryption_pasword.strip()
 
 
 def get_encryption_salt() -> bytes:
@@ -103,7 +103,7 @@ def get_encryption_salt() -> bytes:
             encryption_salt = f.read()
     except Exception:
         encryption_salt = os.getenv("ENCRYPTION_SALT")
-    return bytes(encryption_salt, encoding="utf-8")
+    return bytes(encryption_salt.strip(), encoding="utf-8")
 
 
 def generate_key(password: str) -> bytes:
@@ -124,6 +124,11 @@ def encrypt(phrase: str, key) -> str:
     fernet = Fernet(key)
     enc_phrase = fernet.encrypt(phrase.encode())
     return enc_phrase
+
+
+def encrypt_direct(phrase: str) -> str:
+    encryptd_phrase = encrypt(phrase, generate_key(get_encryption_pasword()))
+    return encryptd_phrase
 
 
 def decrypt(enc_phrase: str, key, encoding: str = "utf-8") -> str:
