@@ -126,6 +126,11 @@ def encrypt(phrase: str, key) -> str:
     return enc_phrase
 
 
+def encrypt_direct(phrase: str) -> str:
+    encryptd_phrase = encrypt(phrase, generate_key(get_encryption_pasword()))
+    return encryptd_phrase
+
+
 def decrypt(enc_phrase: str, key, encoding: str = "utf-8") -> str:
     fernet = Fernet(key)
     phrase = fernet.decrypt(enc_phrase)
