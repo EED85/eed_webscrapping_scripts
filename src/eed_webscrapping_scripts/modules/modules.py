@@ -87,7 +87,7 @@ def get_encryption_pasword() -> str:
             encryption_pasword = f.read()
     except Exception:
         encryption_pasword = os.getenv("ENCRYPTION_PASWORD")  # TODO
-    return encryption_pasword
+    return encryption_pasword.strip()
 
 
 def get_encryption_salt() -> bytes:

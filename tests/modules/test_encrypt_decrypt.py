@@ -13,6 +13,6 @@ def test_encrypt_decrypt(cfg_test):
 #  ist mir vollkommen unklar
 def test_constant_decrypt(cfg_test):
     """Test constant decryption."""
-    result = b"""gAAAAABn4bJ7yHdIjULRgRui9pm65cYEJF8Wzd5O58xrPLQ0YaoUGt_lwwovlmuQJkjkqjBAxicScsBIp_EWHzKFQ0X1oXaKNQ=="""  # noqa
+    result = b"gAAAAABn4bShRo1HbvZ6GGd7-6V-SQOj-xdAXVTc-XxqMBAT0fPTnlUxCs264gb89-Al6HnOKNqUIQS4qBZ9gNnsdQS8OKHlGQ=="  # noqa
     phrase_decrypted = decrypt(result, generate_key(cfg_test["encrytpion"]["password"]))
     assert phrase_decrypted == phrase
