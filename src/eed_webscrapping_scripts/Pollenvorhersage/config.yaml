@@ -1,2 +1,12 @@
 pollenvorhersage:
   url: "gAAAAABn4buymTqBJIWGHgzVJkizGkmO5cmA7zfxjKAcVGUfbegHIt-oWByQ15aN16rfKtXB7eE1vX8b0Rq6Vd16f-JI78astvL7kd9pkmrkeoOZ3y6n3DyPicew1t0aBi8or49G7vO2cE4NAJEvry3qLKa-E13jSg=="
+  plz:
+   - "gAAAAABn4chMXnHJbTgHvP8UcSP3E788qtViciL9yYOMIg2EcZ4ssWtqXQYjuCEuZDVVOkhKR5MHcZhCA5N7jOHa6hGW1n1u2w=="
+  db_infos:
+    db: "pollenvorhersage"
+    datalake: "datalake"
+    information_layer: "information_layer"
+git_root: ""
+env:
+  _ENVIRONMENT_: ""
+runs_on_ga: False

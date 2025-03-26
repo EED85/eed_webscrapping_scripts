@@ -5,6 +5,7 @@ from pathlib import Path
 import dotenv
 import duckdb
 import git
+from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -135,6 +136,19 @@ def decrypt(enc_phrase: str, key, encoding: str = "utf-8") -> str:
     fernet = Fernet(key)
     phrase = fernet.decrypt(enc_phrase)
     return phrase.decode(encoding)
+
+
+def decrypt_direct(enc_phrase: str) -> str:
+    decrypted_phrase = decrypt(enc_phrase, generate_key(get_encryption_pasword()))
+    return decrypted_phrase
+
+
+def save_webpage(page_source, path_to_file):
+    soup = BeautifulSoup(page_source, "html.parser")
+    prettyHTML = str(soup.prettify().encode("utf-8", "ignore"))
+    with open(path_to_file, "w") as f:
+        f.write(prettyHTML)
+    return soup
 
 
 if __name__ == "__main__":
