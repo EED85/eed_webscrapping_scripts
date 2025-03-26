@@ -26,7 +26,7 @@ def get_encryption_result(home_dir) -> bytes:
 
 
 # Fixture to use the mock_load_config function
-@pytest.fixture(scope="session")
+@pytest.fixture
 def patch_get_config_dwd(monkeypatch):
     def get_config_dwd_mock():
         with open(Path("tests") / "dwd" / "config.yaml") as file:
