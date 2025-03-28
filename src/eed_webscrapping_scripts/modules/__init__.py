@@ -14,8 +14,13 @@ __all__ = [
     # duckb utils
     "tbl_check_if_primary_key_exists",
     "get_db_schema_tbl_from_table_name",
+    "tbl_add_primary_key",
 ]
-from .duckdb_utils import get_db_schema_tbl_from_table_name, tbl_check_if_primary_key_exists
+from .duckdb_utils import (
+    get_db_schema_tbl_from_table_name,
+    tbl_add_primary_key,
+    tbl_check_if_primary_key_exists,
+)
 from .modules import (
     connect_to_db,
     decrypt,

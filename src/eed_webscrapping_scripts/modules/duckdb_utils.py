@@ -3,7 +3,7 @@ import duckdb
 
 def tbl_check_if_primary_key_exists(
     table_name: str,
-    primapy_key: list[str],
+    primapy_key: tuple[str] | set[str] | list[str],
     con: duckdb.duckdb.DuckDBPyConnection,
     schema_name: str = None,
     database_name: str = None,
@@ -18,7 +18,7 @@ def tbl_check_if_primary_key_exists(
                 AND database_name = {database_name}
                 AND schema_name = {schema_name}
                 AND table_name = '{table_name}'
-                AND constraint_column_names = {str(primapy_key)}
+                AND constraint_column_names = {str(list(primapy_key))}
     """).fetchall()[0][0]
     return primary_key_exists
 
@@ -43,10 +43,33 @@ def get_db_schema_tbl_from_table_name(
 
 def tbl_add_primary_key(
     table_name: str,
-    primapy_key: list[str],
+    primapy_key: tuple[str] | set[str] | list[str],
     con: duckdb.duckdb.DuckDBPyConnection,
-    if_exists: bool = True,
+    if_exists: str = "fail",
 ) -> bool:
-    database_name, schema_name, table_name = get_db_schema_tbl_from_table_name(table_name)
-    tbl_check_if_primary_key_exists()
-    pass
+    database_name, schema_name, table_name = get_db_schema_tbl_from_table_name(table_name, con=con)
+    primary_key_exists = tbl_check_if_primary_key_exists(
+        table_name=table_name,
+        primapy_key=primapy_key,
+        con=con,
+        schema_name=schema_name,
+        database_name=database_name,
+    )
+    primary_key_was_added = False
+    if primary_key_exists and if_exists == "fail":
+        raise ValueError(f"""
+            {primapy_key=} already exists on Table {table_name=}
+        """)
+    elif primary_key_exists and if_exists != "fail":
+        pass
+    elif not primary_key_exists:
+        pk = str(tuple(primapy_key)).replace("'", "")
+        sql = f"""
+            ALTER TABLE {table_name}
+            ADD PRIMARY KEY {pk}
+        """
+        con.sql(sql)
+        primary_key_was_added = True
+    else:
+        raise ValueError(f""" not implemented for {primary_key_exists=}, {if_exists=} """)
+    return primary_key_was_added
