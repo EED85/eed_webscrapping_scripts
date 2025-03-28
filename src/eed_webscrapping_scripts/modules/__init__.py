@@ -13,9 +13,9 @@ __all__ = [
     "save_webpage",
     # duckb utils
     "tbl_check_if_primary_key_exists",
-    "get_db_schema_from_table_name",
+    "get_db_schema_tbl_from_table_name",
 ]
-from .duckdb_utils import get_db_schema_from_table_name, tbl_check_if_primary_key_exists
+from .duckdb_utils import get_db_schema_tbl_from_table_name, tbl_check_if_primary_key_exists
 from .modules import (
     connect_to_db,
     decrypt,

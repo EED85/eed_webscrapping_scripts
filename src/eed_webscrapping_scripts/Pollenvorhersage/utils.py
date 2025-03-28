@@ -41,9 +41,9 @@ def open_webpage_and_select_plz(url, plz, driver=None):
     return driver
 
 
-def upload_webpage_to_db(con, file, cfg):
+def upload_webpage_to_db(con, file, cfg: dict, table: str = "_webpage_"):
     con.sql(f"""
-        CREATE OR REPLACE TEMP TABLE _webpage_ AS
+        CREATE OR REPLACE TEMP TABLE {table} AS
         SELECT
             parse_filename(filename) AS file,
             content,
@@ -55,7 +55,7 @@ def upload_webpage_to_db(con, file, cfg):
             AND filename = '{str(file)}'
     """)
 
-    con.sql("""CREATE TABLE IF NOT EXISTS datalake.webpages AS SELECT * FROM _webpage_ LIMIT 0""")
+    con.sql("""CREATE TABLE IF NOT EXISTS datalake.webpages AS SELECT * FROM {table} LIMIT 0""")
 
     # con.sql(
     #     "FROM duckdb_constraints()
