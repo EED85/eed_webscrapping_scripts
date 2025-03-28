@@ -29,10 +29,10 @@ def get_db_schema_from_table_name(
     parse_table_name = table_name.split(".")
     _l_ = len(parse_table_name)
     if _l_ == 1:
-        database_name = con.sql("SELECT CURRENT_DATABASE()")
-        schema_name = con.sql("SELECT CURRENT_SCHEMA()")
+        database_name = con.sql("SELECT CURRENT_DATABASE()").fetchall()[0][0]
+        schema_name = con.sql("SELECT CURRENT_SCHEMA()").fetchall()[0][0]
     elif _l_ == 2:
-        database_name = con.sql("SELECT CURRENT_DATABASE()")
+        database_name = con.sql("SELECT CURRENT_DATABASE()").fetchall()[0][0]
         schema_name = parse_table_name[-2]
     elif _l_ == 3:
         schema_name = parse_table_name[-2]
