@@ -15,15 +15,16 @@ def prepare_db(cfg, con=None):
 
     con = con or connect_to_db(cfg)
     if cfg["runs_on_ga"]:
-        con.sql("CREATE DATABASE IF NOT EXISTS dwd")
-    con.sql("USE dwd")
+        con.sql("CREATE DATABASE IF NOT EXISTS pollenvorhersage")
+    else:
+        con.sql("ATTACH IF NOT EXISTS 'pollenvorhersage.duckdb'")
+    con.sql("USE pollenvorhersage")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
     con.sql("CREATE SCHEMA IF NOT EXISTS information_layer")
     con.sql(
         """
-        CREATE TABLE IF NOT EXISTS datalake.loaded_tables(
+        CREATE TABLE IF NOT EXISTS datalake.saved_webpages(
             table_name VARCHAR PRIMARY KEY
-            , last_update timestamp
             , inserttimestamptz TIMESTAMPTZ DEFAULT GET_CURRENT_TIMESTAMP()
         );
     """

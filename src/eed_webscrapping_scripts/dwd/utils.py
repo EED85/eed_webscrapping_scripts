@@ -1,6 +1,8 @@
+import os
+
 import yaml
 
-from eed_webscrapping_scripts.modules import get_git_root
+from eed_webscrapping_scripts.modules import get_git_root, load_dotenv_
 
 
 def download_json_to_duckdb(url: str, con):
@@ -47,8 +49,13 @@ def get_config() -> dict:
     cfg = {}
     git_root = get_git_root() / "src" / "eed_webscrapping_scripts"
     path_to_config = git_root / "dwd" / "config.yaml"
+    runs_on_ga = os.getenv("RUNS_ON_GA") or "0"
+    if not int(runs_on_ga):
+        load_dotenv_()
 
     with open(path_to_config) as file:
         cfg = yaml.safe_load(file)
     cfg["git_root"] = git_root
+    cfg["env"]["_ENVIRONMENT_"] = os.getenv("_ENVIRONMENT_")
+    cfg["runs_on_ga"] = cfg["env"]["_ENVIRONMENT_"] == "GITHUB"
     return cfg

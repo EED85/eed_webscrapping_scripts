@@ -13,7 +13,7 @@ def pollenflug_gefahrenindex():
     datalake = cfg["pollenflug_gefahrenindex"]["db_infos"]["datalake"]
 
     # download data
-    con = prepare_db()
+    con = prepare_db(cfg)
     download_json_to_duckdb(url, con)
     print("ENDE pollenflug_gefahrenindex")
 
@@ -28,6 +28,7 @@ def pollenflug_gefahrenindex():
         f"CREATE OR REPLACE VIEW {datalake}.Pollenflug_Gefahrenindex AS ({sql_union_view_base})"
     )
     con.sql(sql_union_view)
+    return con
 
 
 if __name__ == "__main__":
