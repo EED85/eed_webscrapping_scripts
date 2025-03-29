@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from eed_webscrapping_scripts.modules import get_git_root, load_dotenv_
+from eed_webscrapping_scripts.modules import add_primary_key, get_git_root, load_dotenv_
 
 
 def get_config() -> dict:
@@ -17,7 +17,7 @@ def get_config() -> dict:
     """
     cfg = {}
     git_root = get_git_root() / "src" / "eed_webscrapping_scripts"
-    path_to_config = git_root / "Pollenvorhersage" / "config.yaml"
+    path_to_config = git_root / "pollenvorhersage" / "config.yaml"
     runs_on_ga = os.getenv("RUNS_ON_GA") or "0"
     if not int(runs_on_ga):
         load_dotenv_()
@@ -50,28 +50,20 @@ def upload_webpage_to_db(con, file, cfg: dict, table: str = "_webpage_"):
             size,
             last_modified,
             last_modified::DATE AS last_modified_date,
-        FROM read_blob('{str(cfg["git_root"])}\**')
+        FROM read_blob('{str(file)}')
         WHERE TRUE
-            AND filename = '{str(file)}'
     """)
 
-    con.sql("""CREATE TABLE IF NOT EXISTS datalake.webpages AS SELECT * FROM {table} LIMIT 0""")
-
-    # con.sql(
-    #     "FROM duckdb_constraints()
-    #   SELECT * EXCLUDE(database_name, schema_oid, database_oid, table_oid,
-    # constraint_index, constraint_name)
-    # WHERE constraint_type = 'PRIMARY KEY'"
-    # )
-    con.sql("""
-            SELECT IF(COUNT(*)=0, FALSE, TRUE)
-            FROM duckdb_constraints()
-            WHERE TRUE
-                AND table_name = 'webpages'
-                AND schema_name = 'datalake'
-                AND constraint_column_names = ['file', 'last_modified_date']
+    con.sql(f"""CREATE TABLE IF NOT EXISTS datalake.webpages AS SELECT * FROM {table} LIMIT 0""")
+    add_primary_key(
+        table_name="datalake.webpages",
+        primary_key=("file", "last_modified_date"),
+        con=con,
+        if_exists="pass",
+    )
+    con.sql(f"""
+        INSERT OR IGNORE INTO datalake.webpages
+        SELECT * FROM {table}
     """)
-    con.sql("""
-        ALTER TABLE datalake.webpages
-        ADD PRIMARY KEY (file, last_modified_date);""")
+
     pass

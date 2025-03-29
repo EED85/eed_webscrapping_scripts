@@ -1,5 +1,6 @@
 import base64
 import os
+from pathlib import Path
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
@@ -76,15 +77,27 @@ def decrypt_direct(enc_phrase: str) -> str:
     return decrypted_phrase
 
 
-def encrypt_file(file):
-    phrase = file.read_text()
+def encrypt_file(file_path, file_path_out=None):
+    if isinstance(file_path, str):
+        file_path = Path(file_path)
+    phrase = file_path.read_text()
     encrypted_phrase = encrypt_direct(phrase).decode("utf-8")
-    file.write_text(encrypted_phrase)
+    if file_path_out is None:
+        file_path.write_text(encrypted_phrase)
+    else:
+        if isinstance(file_path_out, str):
+            file_path_out = Path(file_path_out)
+        file_path_out.write_text(encrypted_phrase)
 
 
-def decrypt_file(file):
-    phrase = file.read_text()
-
+def decrypt_file(file_path, file_path_out=None):
+    if isinstance(file_path, str):
+        file_path = Path(file_path)
+    phrase = file_path.read_text()
     decrypted_phrase = decrypt_direct(bytes(phrase, encoding="utf-8"))
-
-    file.write_text(decrypted_phrase)
+    if file_path_out is None:
+        file_path.write_text(decrypted_phrase)
+    else:
+        if isinstance(file_path_out, str):
+            file_path_out = Path(file_path_out)
+        file_path_out.write_text(decrypted_phrase)
