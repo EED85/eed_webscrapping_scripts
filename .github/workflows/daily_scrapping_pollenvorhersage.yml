@@ -1,4 +1,4 @@
-name: daily scrapping
+name: daily scrapping pollenvorhersage
 
 on:
   schedule:
