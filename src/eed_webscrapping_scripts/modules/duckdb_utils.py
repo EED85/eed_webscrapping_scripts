@@ -1,25 +1,24 @@
 import duckdb
 
 
-def tbl_check_if_primary_key_exists(
+def check_if_primary_key_exists(
     table_name: str,
-    primapy_key: tuple[str] | set[str] | list[str],
     con: duckdb.duckdb.DuckDBPyConnection,
     schema_name: str = None,
     database_name: str = None,
 ) -> bool:
     database_name = "CURRENT_DATABASE()" if database_name is None else f"'{database_name}'"
     schema_name = "CURRENT_SCHEMA()" if schema_name is None else f"'{schema_name}'"
-
-    primary_key_exists = con.sql(f"""
-            SELECT IF(COUNT(*)=0, FALSE, TRUE)
+    sql = f"""
+            SELECT IF(COUNT(*) = 0, FALSE, TRUE)
             FROM duckdb_constraints()
             WHERE TRUE
                 AND database_name = {database_name}
                 AND schema_name = {schema_name}
                 AND table_name = '{table_name}'
-                AND constraint_column_names = {str(list(primapy_key))}
-    """).fetchall()[0][0]
+                AND constraint_type = 'PRIMARY KEY'
+    """
+    primary_key_exists = con.sql(sql).fetchall()[0][0]
     return primary_key_exists
 
 
@@ -41,16 +40,15 @@ def get_db_schema_tbl_from_table_name(
     return database_name, schema_name, table_name
 
 
-def tbl_add_primary_key(
+def add_primary_key(
     table_name: str,
-    primapy_key: tuple[str] | set[str] | list[str],
+    primary_key: tuple[str] | set[str] | list[str],
     con: duckdb.duckdb.DuckDBPyConnection,
     if_exists: str = "fail",
 ) -> bool:
     database_name, schema_name, table_name = get_db_schema_tbl_from_table_name(table_name, con=con)
-    primary_key_exists = tbl_check_if_primary_key_exists(
+    primary_key_exists = check_if_primary_key_exists(
         table_name=table_name,
-        primapy_key=primapy_key,
         con=con,
         schema_name=schema_name,
         database_name=database_name,
@@ -58,12 +56,12 @@ def tbl_add_primary_key(
     primary_key_was_added = False
     if primary_key_exists and if_exists == "fail":
         raise ValueError(f"""
-            {primapy_key=} already exists on Table {table_name=}
+            {primary_key=} already exists on Table {table_name=}
         """)
     elif primary_key_exists and if_exists != "fail":
         pass
     elif not primary_key_exists:
-        pk = str(tuple(primapy_key)).replace("'", "")
+        pk = str(tuple(primary_key)).replace("'", "")
         sql = f"""
             ALTER TABLE {table_name}
             ADD PRIMARY KEY {pk}

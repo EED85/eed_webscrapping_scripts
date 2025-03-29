@@ -12,14 +12,14 @@ __all__ = [
     "decrypt_direct",
     "save_webpage",
     # duckb utils
-    "tbl_check_if_primary_key_exists",
+    "check_if_primary_key_exists",
     "get_db_schema_tbl_from_table_name",
-    "tbl_add_primary_key",
+    "add_primary_key",
 ]
 from .duckdb_utils import (
+    add_primary_key,
+    check_if_primary_key_exists,
     get_db_schema_tbl_from_table_name,
-    tbl_add_primary_key,
-    tbl_check_if_primary_key_exists,
 )
 from .modules import (
     connect_to_db,
