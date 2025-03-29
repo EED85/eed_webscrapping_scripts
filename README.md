@@ -20,6 +20,7 @@ uv venv .venv
 uv pip install e .
 uvx pre-commit install
 ```
+
 Please ensure to create a pull request before making any changes.
 
 ## Pipelines
@@ -39,3 +40,4 @@ runs daily main.py and scrappes data
 #### Developement
 add if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
 before step Checkout latest release for developement puposese
+
