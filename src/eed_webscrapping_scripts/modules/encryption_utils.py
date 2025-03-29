@@ -77,20 +77,14 @@ def decrypt_direct(enc_phrase: str) -> str:
 
 
 def encrypt_file(file):
-    with open(file) as file:
-        phrase = file.read()
-
-    encrypted_phrase = encrypt_direct(phrase)
-
-    with open(file, "w") as file:
-        file.write(encrypted_phrase)
+    phrase = file.read_text()
+    encrypted_phrase = encrypt_direct(phrase).decode("utf-8")
+    file.write_text(encrypted_phrase)
 
 
 def decrypt_file(file):
-    with open(file) as file:
-        phrase = file.read()
+    phrase = file.read_text()
 
-    decrypted_phrase = decrypt_direct(phrase)
+    decrypted_phrase = decrypt_direct(bytes(phrase, encoding="utf-8"))
 
-    with open(file, "w") as file:
-        file.write(decrypted_phrase)
+    file.write_text(decrypted_phrase)

@@ -12,6 +12,8 @@ __all__ = [
     "encrypt_direct",
     "decrypt",
     "decrypt_direct",
+    "encrypt_file",
+    "decrypt_file",
     # duckb utils
     "check_if_primary_key_exists",
     "get_db_schema_tbl_from_table_name",
@@ -25,8 +27,10 @@ from .duckdb_utils import (
 from .encryption_utils import (
     decrypt,
     decrypt_direct,
+    decrypt_file,
     encrypt,
     encrypt_direct,
+    encrypt_file,
     generate_key,
     get_encryption_pasword,
     get_encryption_salt,
