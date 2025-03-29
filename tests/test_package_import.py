@@ -1,4 +1,4 @@
-def test_package_import(get_config_test):
+def test_package_import():
     import eed_webscrapping_scripts
 
     print(eed_webscrapping_scripts.__path__)

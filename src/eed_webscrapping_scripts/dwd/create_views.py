@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from eed_webscrapping_scripts.dwd import get_config, prepare_db
+from eed_webscrapping_scripts.dwd.pollenflug_gefahrenindex import pollenflug_gefahrenindex
 from eed_webscrapping_scripts.modules import read_sql_file
 
 
@@ -12,7 +13,11 @@ def create_views():
     """
     cfg = get_config()
     information_layer = cfg["pollenflug_gefahrenindex"]["db_infos"]["information_layer"]
-    con = prepare_db()
+
+    if cfg["runs_on_ga"]:  # noqa: SIM108
+        con = prepare_db(cfg)
+    else:
+        con = pollenflug_gefahrenindex()
 
     # create views for information layer
     try:

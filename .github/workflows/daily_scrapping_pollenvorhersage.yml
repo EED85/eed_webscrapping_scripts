@@ -1,4 +1,4 @@
-name: daily scrapping
+name: daily scrapping pollenvorhersage
 
 on:
   schedule:
@@ -49,4 +49,4 @@ jobs:
           _environment_=$(uvx python -c "import os; print(os.getenv('_ENVIRONMENT_'))")
           echo $runs_on_ga
           echo $_environment_
-          uv run src/eed_webscrapping_scripts/main.py
+          

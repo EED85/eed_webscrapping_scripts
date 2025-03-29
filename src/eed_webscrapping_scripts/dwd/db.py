@@ -1,7 +1,7 @@
 from eed_webscrapping_scripts.modules import connect_to_db
 
 
-def prepare_db(con=None):
+def prepare_db(cfg, con=None):
     """Prepares dwd database.
 
     Args:
@@ -13,8 +13,9 @@ def prepare_db(con=None):
         Useful, if con has been ommitted by inputargs.
     """
 
-    con = con or connect_to_db()
-    con.sql("CREATE DATABASE IF NOT EXISTS dwd")
+    con = con or connect_to_db(cfg)
+    if cfg["runs_on_ga"]:
+        con.sql("CREATE DATABASE IF NOT EXISTS dwd")
     con.sql("USE dwd")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
     con.sql("CREATE SCHEMA IF NOT EXISTS information_layer")
