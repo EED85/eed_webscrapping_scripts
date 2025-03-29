@@ -3,6 +3,8 @@ __all__ = [
     "connect_to_db",
     "get_git_root",
     "load_dotenv_",
+    "save_webpage",
+    # encryption_utils
     "get_encryption_pasword",
     "get_encryption_salt",
     "generate_key",
@@ -10,7 +12,6 @@ __all__ = [
     "encrypt_direct",
     "decrypt",
     "decrypt_direct",
-    "save_webpage",
     # duckb utils
     "check_if_primary_key_exists",
     "get_db_schema_tbl_from_table_name",
@@ -21,8 +22,7 @@ from .duckdb_utils import (
     check_if_primary_key_exists,
     get_db_schema_tbl_from_table_name,
 )
-from .modules import (
-    connect_to_db,
+from .encryption_utils import (
     decrypt,
     decrypt_direct,
     encrypt,
@@ -30,6 +30,9 @@ from .modules import (
     generate_key,
     get_encryption_pasword,
     get_encryption_salt,
+)
+from .modules import (
+    connect_to_db,
     get_git_root,
     load_dotenv_,
     read_sql_file,
