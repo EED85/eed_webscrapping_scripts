@@ -72,7 +72,8 @@ def prepare_db(cfg_test: dict):
     # prepare tables for testing
     con.sql("""
         CREATE OR REPLACE TABLE t01_primary_key (id INTEGER, j VARCHAR, PRIMARY KEY (id, j));
-        CREATE OR REPLACE TABLE t01_wo_primary_key (id INTEGER, j VARCHAR);
+        CREATE OR REPLACE TABLE t01_wo_primary_key_add_pk (id INTEGER, j VARCHAR);
+        CREATE OR REPLACE TABLE t01_wo_primary_key_check_pk (id INTEGER, j VARCHAR);
     """)
     yield con
     con.close()

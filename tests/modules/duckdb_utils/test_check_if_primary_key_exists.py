@@ -7,7 +7,7 @@ from eed_webscrapping_scripts.modules import check_if_primary_key_exists
     "table_name, primary_key_exists",
     [
         ("t01_primary_key", True),
-        ("t01_wo_primary_key", False),
+        ("t01_wo_primary_key_check_pk", False),
     ],
     ids=[
         "primary key exists - list as primary key",

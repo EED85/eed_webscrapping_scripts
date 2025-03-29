@@ -7,7 +7,7 @@ from eed_webscrapping_scripts.modules import add_primary_key
     "table_name, primary_key, if_exists, primary_key_was_added_expected",
     [
         ("t01_primary_key", ["id", "j"], "pass", False),
-        ("t01_wo_primary_key", {"id", "j"}, "fail", True),
+        ("t01_wo_primary_key_add_pk", {"id", "j"}, "fail", True),
     ],
     ids=[
         "primary key already exists - fail safe - list as primary key",
