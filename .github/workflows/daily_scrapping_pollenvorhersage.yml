@@ -34,6 +34,8 @@ jobs:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
           RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
           _ENVIRONMENT_: ${{ vars._ENVIRONMENT_ }}
+          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+          ENCRYPTION_PASWORD: ${{ secrets.ENCRYPTION_PASWORD }}
         run: |
           runs_on_ga=$(uvx python -c "import os; print(os.getenv('RUNS_ON_GA'))")
           _environment_=$(uvx python -c "import os; print(os.getenv('_ENVIRONMENT_'))")
