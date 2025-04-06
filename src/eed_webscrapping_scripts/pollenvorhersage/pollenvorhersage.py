@@ -56,6 +56,7 @@ def pollenvorhersage():
         # Close the WebDriver
         driver.quit()
     print("END")
+    return con
 
 
 if __name__ == "__main__":
