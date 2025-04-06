@@ -6,7 +6,7 @@ import duckdb
 import pytest
 import yaml
 
-from eed_webscrapping_scripts.modules import get_encryption_pasword
+from eed_webscrapping_scripts.modules import get_encryption_pasword, load_dotenv_
 
 
 def get_encryption_result(home_dir) -> bytes:
@@ -46,6 +46,7 @@ def cfg_test(db_setup) -> Iterator[dict]:
     home_dir = os.path.expanduser("~")
     password = get_encryption_pasword()
     encryption_result = get_encryption_result(home_dir)
+    load_dotenv_("tests/.env")
     cfg_test = {
         "home_dir": home_dir,
         "encrytpion": {"password": password, "result": encryption_result},
@@ -54,6 +55,7 @@ def cfg_test(db_setup) -> Iterator[dict]:
             "database": "db_test",
             "schema": "schema_test",
         },
+        "env": {},
     }
     yield cfg_test
 
