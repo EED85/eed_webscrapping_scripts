@@ -56,6 +56,6 @@ def get_config() -> dict:
     with open(path_to_config) as file:
         cfg = yaml.safe_load(file)
     cfg["git_root"] = git_root
-    cfg["env"]["_ENVIRONMENT_"] = os.getenv("_ENVIRONMENT_")
-    cfg["runs_on_ga"] = cfg["env"]["_ENVIRONMENT_"] == "GITHUB"
+    cfg["env"]["_EXECUTION_ENVIRONMENT_"] = os.getenv("_EXECUTION_ENVIRONMENT_")
+    cfg["runs_on_ga"] = cfg["env"]["_EXECUTION_ENVIRONMENT_"] == "GITHUB"
     return cfg

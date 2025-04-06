@@ -6,5 +6,5 @@ pollenflug_gefahrenindex:
     information_layer: "information_layer"
 git_root: ""
 env:
-  _ENVIRONMENT_: ""
+  _EXECUTION_ENVIRONMENT_: ""
 runs_on_ga: False
