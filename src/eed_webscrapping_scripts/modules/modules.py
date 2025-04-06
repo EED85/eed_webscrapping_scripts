@@ -9,13 +9,21 @@ from bs4 import BeautifulSoup
 home_dir = os.path.expanduser("~")
 
 
-def load_dotenv_(path_to_env: str = None):
+def load_dotenv_(path_to_env: str = None, override=False) -> dict:
     if path_to_env is None:
         dotenv.load_dotenv()
+        return None
     else:
         env_variables = dotenv.dotenv_values(path_to_env)
         for key, value in env_variables.items():
-            os.environ[key] = value
+            if not override:
+                if key in os.environ:
+                    env_variables[key] = os.environ[key]
+                else:
+                    os.environ[key] = value
+            else:
+                os.environ[key] = value
+        return env_variables
 
 
 def read_sql_file(path_to_file: str, git_root: str = None) -> str:
