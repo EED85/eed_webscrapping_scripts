@@ -39,7 +39,7 @@ def connect_to_db(cfg=None):
     Returns:
         DuckDB / Motherduck connection:
     """
-    if cfg["env"]["_ENVIRONMENT_"] == "GITHUB":
+    if cfg["env"]["_EXECUTION_ENVIRONMENT_"] == "GITHUB":
         try:
             with open(os.path.join(home_dir, ".motherduck_token")) as f:
                 md_token = f.read()
