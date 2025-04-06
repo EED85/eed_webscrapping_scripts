@@ -48,7 +48,7 @@ def cfg_test(db_setup) -> Iterator[dict]:
     path_to_env = git_root / "tests" / ".env"
     password = get_encryption_pasword()
     encryption_result = get_encryption_result(home_dir)
-    env_variables = load_dotenv_(path_to_env)
+    env_variables = load_dotenv_(path_to_env, override=True)
     cfg_test = {
         "home_dir": home_dir,
         "encrytpion": {"password": password, "result": encryption_result},

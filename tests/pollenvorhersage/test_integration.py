@@ -1,7 +1,7 @@
-from eed_webscrapping_scripts.pollenvorhersage import pollenvorhersage
+from eed_webscrapping_scripts.pollenvorhersage.pollenvorhersage import pollenvorhersage
 
 
 def test_pollenvorhersage(cfg_test):
     con = pollenvorhersage()
-    con.sql("SELET 1 AS ONE")
+    con.sql("SELECT 1 AS ONE")
     assert True

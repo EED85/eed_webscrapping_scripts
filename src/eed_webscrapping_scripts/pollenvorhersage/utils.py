@@ -8,6 +8,30 @@ from selenium.webdriver.common.keys import Keys
 from eed_webscrapping_scripts.modules import add_primary_key, get_git_root, load_dotenv_
 
 
+def get_environment() -> str:
+    runs_on_ga = os.getenv("RUNS_ON_GA") or "0"
+    load_dotenv_()
+
+    _EXECUTION_MODE_ = os.getenv("_EXECUTION_MODE_")
+    _EXECUTION_ENVIRONMENT_ = os.getenv("_EXECUTION_ENVIRONMENT_")
+
+    if _EXECUTION_MODE_ == "IDE" and _EXECUTION_ENVIRONMENT_ == "local":
+        return "PROD"
+    elif (
+        _EXECUTION_MODE_ == "PYTEST"
+        and _EXECUTION_ENVIRONMENT_ == "local"
+        or _EXECUTION_MODE_ == "PYTEST"
+        and runs_on_ga
+    ):
+        return "DEV"
+    elif _EXECUTION_MODE_ == "GA" and runs_on_ga:
+        return "PROD"
+    else:
+        raise ValueError(
+            f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}, {runs_on_ga=}"
+        )
+
+
 def get_config() -> dict:
     """Generates a dict based on ``config.yaml``.
     These parameters are used in the whole programm to pass Variables between programms.
@@ -18,14 +42,14 @@ def get_config() -> dict:
     cfg = {}
     git_root = get_git_root() / "src" / "eed_webscrapping_scripts"
     path_to_config = git_root / "pollenvorhersage" / "config.yaml"
-    runs_on_ga = os.getenv("RUNS_ON_GA") or "0"
-    if not int(runs_on_ga):
-        load_dotenv_()
-
     with open(path_to_config) as file:
         cfg = yaml.safe_load(file)
+
+    _ENVIRONMENT_ = get_environment()
     cfg["git_root"] = git_root
     cfg["env"]["_EXECUTION_ENVIRONMENT_"] = os.getenv("_EXECUTION_ENVIRONMENT_")
+    cfg["env"]["_ENVIRONMENT_"] = _ENVIRONMENT_
+    cfg["env"]["_EXECUTION_MODE_"] = os.getenv("_EXECUTION_MODE_")
     cfg["runs_on_ga"] = cfg["env"]["_EXECUTION_ENVIRONMENT_"] == "GITHUB"
     return cfg
 

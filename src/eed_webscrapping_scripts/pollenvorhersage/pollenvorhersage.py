@@ -26,7 +26,7 @@ def pollenvorhersage():
 
     for _i_, plz in enumerate(plzs):
         print(f"{_i_=}")
-        if cfg["runs_on_ga"]:
+        if cfg["env"]["_ENVIRONMENT_"] == "PROD":
             driver = webdriver.Chrome()
             driver = open_webpage_and_select_plz(url, plz, driver)
             time.sleep(2.5)
@@ -52,7 +52,7 @@ def pollenvorhersage():
     # Wait for the data to load and scrape the data
     # Add your scraping logic here
 
-    if cfg["runs_on_ga"]:
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD":
         # Close the WebDriver
         driver.quit()
     print("END")
