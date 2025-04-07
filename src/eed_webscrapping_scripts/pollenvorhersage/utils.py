@@ -9,7 +9,6 @@ from eed_webscrapping_scripts.modules import add_primary_key, get_git_root, load
 
 
 def get_environment() -> str:
-    runs_on_ga = os.getenv("RUNS_ON_GA") or "0"
     load_dotenv_()
 
     _EXECUTION_MODE_ = os.getenv("_EXECUTION_MODE_")
@@ -17,18 +16,15 @@ def get_environment() -> str:
 
     if _EXECUTION_MODE_ == "IDE" and _EXECUTION_ENVIRONMENT_ == "local":
         return "PROD"
-    elif (
-        _EXECUTION_MODE_ == "PYTEST"
-        and _EXECUTION_ENVIRONMENT_ == "local"
-        or _EXECUTION_MODE_ == "PYTEST"
-        and runs_on_ga
+    elif (_EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "local") or (
+        _EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "GITHUB"
     ):
         return "DEV"
-    elif _EXECUTION_MODE_ == "GA" and runs_on_ga:
+    elif _EXECUTION_MODE_ == "GA" and _EXECUTION_ENVIRONMENT_ == "GITHUB":
         return "PROD"
     else:
         raise ValueError(
-            f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}, {runs_on_ga=}"
+            f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}"
         )
 
 
@@ -65,16 +61,17 @@ def open_webpage_and_select_plz(url, plz, driver=None):
     return driver
 
 
-def upload_webpage_to_db(con, file, cfg: dict, table: str = "_webpage_"):
+def upload_webpage_to_db(con, file, plz, cfg: dict, table: str = "_webpage_"):
     con.sql(f"""
         CREATE OR REPLACE TEMP TABLE {table} AS
         SELECT
             parse_filename(filename) AS file,
             content,
             size,
+            '{plz}' AS plz,
             last_modified,
             last_modified::DATE AS last_modified_date,
-        FROM read_blob('{str(file)}')
+        FROM read_text('{str(file)}')
         WHERE TRUE
     """)
 
