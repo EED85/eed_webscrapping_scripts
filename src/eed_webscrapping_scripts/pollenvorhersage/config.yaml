@@ -10,4 +10,5 @@ pollenvorhersage:
 git_root: ""
 env:
   _EXECUTION_ENVIRONMENT_: ""
-runs_on_ga: False
+  _EXECUTION_MODE_: ""
+runs_on_ga: ""

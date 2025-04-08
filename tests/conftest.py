@@ -6,7 +6,7 @@ import duckdb
 import pytest
 import yaml
 
-from eed_webscrapping_scripts.modules import get_encryption_pasword
+from eed_webscrapping_scripts.modules import get_encryption_pasword, get_git_root, load_dotenv_
 
 
 def get_encryption_result(home_dir) -> bytes:
@@ -44,8 +44,11 @@ def db_setup():
 @pytest.fixture(scope="session")
 def cfg_test(db_setup) -> Iterator[dict]:
     home_dir = os.path.expanduser("~")
+    git_root = get_git_root()
+    path_to_env = git_root / "tests" / ".env"
     password = get_encryption_pasword()
     encryption_result = get_encryption_result(home_dir)
+    env_variables = load_dotenv_(path_to_env, override=True)
     cfg_test = {
         "home_dir": home_dir,
         "encrytpion": {"password": password, "result": encryption_result},
@@ -54,6 +57,7 @@ def cfg_test(db_setup) -> Iterator[dict]:
             "database": "db_test",
             "schema": "schema_test",
         },
+        "env": env_variables,
     }
     yield cfg_test
 
@@ -78,3 +82,5 @@ def prepare_db(cfg_test: dict):
     yield con
     con.close()
     Path.unlink(f"{database}.duckdb")
+
+    # TODO find all duckdb files, that shall not be versioned in this repo and delete them

@@ -1,3 +1,4 @@
+import os
 import time
 from pathlib import Path
 
@@ -19,6 +20,10 @@ def pollenvorhersage():
 
     # set parameters
     cfg = get_config()
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD" and os.getenv("_EXECUTION_ENVIRONMENT_") == "local":
+        proceed = input("Do you want to execute a PRODUCTION run locally? (Y) / (N)")
+        if proceed != "Y":
+            raise ValueError("Aborted by User")
     url = decrypt_direct(cfg["pollenvorhersage"]["url"])
     plzs = [decrypt_direct(plz) for plz in cfg["pollenvorhersage"]["plz"]]
 
@@ -26,7 +31,7 @@ def pollenvorhersage():
 
     for _i_, plz in enumerate(plzs):
         print(f"{_i_=}")
-        if cfg["runs_on_ga"]:
+        if cfg["env"]["_ENVIRONMENT_"] == "PROD":
             driver = webdriver.Chrome()
             driver = open_webpage_and_select_plz(url, plz, driver)
             time.sleep(2.5)
@@ -41,7 +46,8 @@ def pollenvorhersage():
             file = Path(cfg["git_root"], file_rel_decrypted)
             decrypt_file(file_encrypted, file)
 
-        upload_webpage_to_db(con, file, cfg)
+        upload_webpage_to_db(con, file, plz, cfg)
+        print("upladed")
 
     # Enter the value into the search box
 
@@ -52,11 +58,18 @@ def pollenvorhersage():
     # Wait for the data to load and scrape the data
     # Add your scraping logic here
 
-    if cfg["runs_on_ga"]:
-        # Close the WebDriver
-        driver.quit()
+    # clean up
+
+    match cfg["env"]["_ENVIRONMENT_"]:
+        case "PROD":
+            driver.quit()
+            con.close()
+        case "DEV":
+            pass
+
     print("END")
+    return con
 
 
 if __name__ == "__main__":
-    pollenvorhersage()
+    con = pollenvorhersage()

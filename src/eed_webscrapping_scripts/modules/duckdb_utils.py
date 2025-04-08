@@ -63,7 +63,7 @@ def add_primary_key(
     elif not primary_key_exists:
         pk = str(tuple(primary_key)).replace("'", "")
         sql = f"""
-            ALTER TABLE {table_name}
+            ALTER TABLE {database_name}.{schema_name}.{table_name}
             ADD PRIMARY KEY {pk}
         """
         con.sql(sql)
