@@ -82,3 +82,5 @@ def prepare_db(cfg_test: dict):
     yield con
     con.close()
     Path.unlink(f"{database}.duckdb")
+
+    # TODO find all duckdb files, that shall not be versioned in this repo and delete them

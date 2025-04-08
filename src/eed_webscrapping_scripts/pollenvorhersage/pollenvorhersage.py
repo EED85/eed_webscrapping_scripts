@@ -58,13 +58,18 @@ def pollenvorhersage():
     # Wait for the data to load and scrape the data
     # Add your scraping logic here
 
-    if cfg["env"]["_ENVIRONMENT_"] == "PROD":
-        # Close the WebDriver
-        driver.quit()
+    # clean up
+
+    match cfg["env"]["_ENVIRONMENT_"]:
+        case "PROD":
+            driver.quit()
+            con.close()
+        case "DEV":
+            pass
+
     print("END")
     return con
 
 
 if __name__ == "__main__":
     con = pollenvorhersage()
-    con.close()

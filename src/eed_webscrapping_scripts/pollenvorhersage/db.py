@@ -18,7 +18,7 @@ def prepare_db(cfg, con=None):
     if cfg["env"]["_ENVIRONMENT_"] == "PROD":
         con.sql("CREATE DATABASE IF NOT EXISTS pollenvorhersage")
     else:
-        con.sql("ATTACH IF NOT EXISTS 'pollenvorhersage'")
+        con.sql("ATTACH IF NOT EXISTS 'pollenvorhersage.duckdb'")
     con.sql("USE pollenvorhersage")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
     con.sql("CREATE SCHEMA IF NOT EXISTS information_layer")
