@@ -3,6 +3,14 @@ pollenvorhersage:
   plz:
    - "gAAAAABn4chMXnHJbTgHvP8UcSP3E788qtViciL9yYOMIg2EcZ4ssWtqXQYjuCEuZDVVOkhKR5MHcZhCA5N7jOHa6hGW1n1u2w=="
    - "gAAAAABn6HlctCli5eRcje55dRtnylfOjzgWftAOlSLQQ_v3w2uLZSNl4fzkhdaVt2AT25S4d-ktC6MtxwNtiJ-bxy7Obtb7oQ=="
+   - 'gAAAAABn9Ye--qwYS1YUeo1Hg9atAtlF79i3RTsgJZK0vgc2VA1MW2LDVCekdIqAiozeh7NsGHnbjzFF4PYzuf5sOmdTFRIzhA=='
+   - 'gAAAAABn9YgaiO9lQlao02t06_ynIaN4y5BUk5QzbDHG-0ojc85-mLCtDJTOQ95gmUfK2CO3u1Lx79299_wdd5YTLyi5CG407Q=='
+   - 'gAAAAABn9Yhf5TyJ8mJdbl-C_DXu1gzBHwtAmMwFYz6Gwk_T2FCSMmfZ41cjtxC13geEhmTqjqPGrCzk8ZCNsGX7vfT2Aceikw=='
+   - 'gAAAAABn9YijCQDKH56rEldpE7nCZEZ_rbu1bj0Dv7vbQVHb-ll7GzeLxg-Mu61ldGXdd_jTwSOrDNvj97eomSsEBElCrWgZ7A=='
+   - 'gAAAAABn9fQkVHk7EA-JtvhHgQNZg674_kXWMgqRZbsHFKDElWznvIPtybUC_oojsv9VPFZH6xWnh8yJtno6pWrlmkvYPC62GQ=='
+   - 'gAAAAABn9YlKRePHaOmYZACXIYqOJfFUsxvKXBKwUhSDbkzd60tU98vYNVKLg9xK3wc2ThhnmUjm3aC6TDclM3mYFgvPfRP0cA=='
+   - 'gAAAAABn9YnjgDptIxxQWYsuDzYZw6p57cV0ro1uZh7QwmuBOhJbWvknOTGQ8Aema0QR9njwyhnesK-OKGKew4C5gX6f2-dNUg=='
+   - 'gAAAAABn9YqEOBOT5vSHIxrn6KrBNfczZ5bAqO9aLO-O-ZWZMNK4zE7CGgwTT3Akhx475xXuPYbpwanfuAWsinW0EteZCHC5JA=='
   db_infos:
     db: "pollenvorhersage"
     datalake: "datalake"
