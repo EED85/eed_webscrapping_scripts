@@ -26,6 +26,7 @@ def pollenvorhersage():
             raise ValueError("Aborted by User")
     url = decrypt_direct(cfg["pollenvorhersage"]["url"])
     plzs = [decrypt_direct(plz) for plz in cfg["pollenvorhersage"]["plz"]]
+    print(len(plzs))
 
     con = prepare_db(cfg)
 
