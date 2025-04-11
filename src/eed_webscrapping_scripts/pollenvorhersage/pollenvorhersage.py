@@ -1,5 +1,4 @@
 import os
-import time
 from pathlib import Path
 
 from selenium import webdriver
@@ -35,7 +34,6 @@ def pollenvorhersage():
         if cfg["env"]["_ENVIRONMENT_"] == "PROD":
             driver = webdriver.Chrome()
             driver = open_webpage_and_select_plz(url, plz, driver)
-            time.sleep(2.5)
             file_rel = Path("pollenvorhersage", "websites", f"{plz}.html")
             file = Path(cfg["git_root"], file_rel)
             save_webpage(driver.page_source, str(file))
