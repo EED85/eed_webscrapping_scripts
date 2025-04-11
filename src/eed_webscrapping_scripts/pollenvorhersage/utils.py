@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from eed_webscrapping_scripts.modules import add_primary_key, get_git_root, load_dotenv_
+from eed_webscrapping_scripts.modules import add_primary_key, get_git_root, load_dotenv_, sleep
 
 
 def get_environment() -> str:
@@ -54,6 +54,7 @@ def open_webpage_and_select_plz(url, plz, driver=None):
     if driver is None:
         driver = webdriver.Chrome()
     driver.get(url)
+    sleep(1, 2)
     # Find the search box using XPath
     search_box = driver.find_element(By.XPATH, '//*[@id="searchBox"]')
     search_box.send_keys(plz)
