@@ -3,6 +3,12 @@ FROM duckdb_views();
 
 FROM information_layer.Pollenflug_Gefahrenindex_03_unpivot;
 
+FROM information_layer.Pollenflug_Gefahrenindex_04_features
+SELECT region_name, partregion_name,  date, pollenart, Pollenflug_Gefahrenindex_mean, *
+WHERE region_id = 40 AND aktuellste_vorhersage aND Pollenflug_Gefahrenindex_mean > 0
+ORDER BY date desc, pollenart desc
+;
+
 WITH _base AS (
 	FROM information_layer.Pollenflug_Gefahrenindex_03_unpivot
 	SELECT 

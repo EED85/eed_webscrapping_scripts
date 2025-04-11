@@ -23,7 +23,7 @@ USE dwd;
 FROM information_layer.Pollenflug_Gefahrenindex_03_unpivot 
 WHERE TRUE
 	AND region_id = 40 
-	AND partregion_id = 41
+	AND partregion_id = 42
 ORDER BY last_update DESC, date DESC
 LIMIT NULL
 ;

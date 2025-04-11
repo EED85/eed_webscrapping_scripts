@@ -4,9 +4,7 @@ from pathlib import Path
 import dotenv
 import duckdb
 import git
-
-# loading variables from .env file
-
+from bs4 import BeautifulSoup
 
 home_dir = os.path.expanduser("~")
 
@@ -52,7 +50,7 @@ def connect_to_db(cfg=None):
     Returns:
         DuckDB / Motherduck connection:
     """
-    if cfg["env"]["_EXECUTION_ENVIRONMENT_"] == "GITHUB":
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD":  # TODO: ES-282 DWD anpasse
         try:
             with open(os.path.join(home_dir, ".motherduck_token")) as f:
                 md_token = f.read()
@@ -81,3 +79,11 @@ def get_git_root(path=None):
     git_repo = git.Repo(path, search_parent_directories=True)
     git_root = Path(git_repo.git.rev_parse("--show-toplevel"))
     return git_root
+
+
+def save_webpage(page_source, path_to_file):
+    soup = BeautifulSoup(page_source, "html.parser")
+    prettyHTML = str(soup.prettify().encode("utf-8", "ignore"))
+    with open(path_to_file, "w") as f:
+        f.write(prettyHTML)
+    return soup
