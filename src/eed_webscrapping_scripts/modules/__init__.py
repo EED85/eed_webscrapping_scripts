@@ -4,6 +4,7 @@ __all__ = [
     "get_git_root",
     "load_dotenv_",
     "save_webpage",
+    "get_table_definition",
     # encryption_utils
     "get_encryption_pasword",
     "get_encryption_salt",
@@ -41,6 +42,7 @@ from .encryption_utils import (
 from .modules import (
     connect_to_db,
     get_git_root,
+    get_table_definition,
     load_dotenv_,
     read_sql_file,
     save_webpage,

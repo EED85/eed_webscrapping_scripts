@@ -1,3 +1,4 @@
+import copy
 import os
 from pathlib import Path
 
@@ -87,3 +88,25 @@ def save_webpage(page_source, path_to_file):
     with open(path_to_file, "w") as f:
         f.write(prettyHTML)
     return soup
+
+
+def get_table_definition(
+    table_name: str, cfg: dict, schema_name="datalake", database_name="pollenvorhersage"
+) -> dict:
+    """
+    Retrieves the table definition from the configuration dictionary and constructs the full path for the table.
+
+    Parameters:
+    table_name (str): The name of the table to retrieve the definition for.
+    cfg (dict): The configuration dictionary containing database, schema and table informations.
+    schema_name (str, optional): The name of the schema. Default is "datalake".
+    database_name (str, optional): The name of the database. Default is "pollenvorhersage".
+
+    Returns:
+    dict: The table definition dictionary with the full path included.
+    """
+    cfg_copy = copy.deepcopy(cfg)
+    table_definition = cfg_copy[database_name]["db_infos"][schema_name]["tables"][table_name]
+    schema_name_real = cfg_copy[database_name]["db_infos"][schema_name]["name"]
+    table_definition["path"] = f"""{database_name}.{schema_name_real}.{table_definition["name"]}"""
+    return table_definition

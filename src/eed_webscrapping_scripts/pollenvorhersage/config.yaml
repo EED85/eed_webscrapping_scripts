@@ -13,8 +13,17 @@ pollenvorhersage:
    - 'gAAAAABn9YqEOBOT5vSHIxrn6KrBNfczZ5bAqO9aLO-O-ZWZMNK4zE7CGgwTT3Akhx475xXuPYbpwanfuAWsinW0EteZCHC5JA=='
   db_infos:
     db: "pollenvorhersage"
-    datalake: "datalake"
+    datalake:
+      name: "datalake"
+      tables:
+        webpages:
+          name: webpages
+          path: ""
+          primary_key:
+            - file
+            - last_modified_date
     information_layer: "information_layer"
+
 git_root: ""
 env:
   _EXECUTION_ENVIRONMENT_: ""
