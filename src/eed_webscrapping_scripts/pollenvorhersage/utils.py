@@ -97,3 +97,39 @@ def upload_webpage_to_db(con, file, plz, cfg: dict, table: str = "_webpage_"):
     """)
 
     pass
+
+
+def download_wepages(cfg, con):
+    tbl_w = get_table_definition(cfg=cfg, table_name="webpages")
+    tbl_pv = get_table_definition(
+        cfg=cfg, table_name="pollenflug_vorhersage", schema_name="information_layer"
+    )
+
+    # identify tables, that have not been scrapped
+    con.sql(f"""
+        CREATE OR REPLACE TEMPORARY TABLE tables_not_scrapped AS
+        WITH _w AS (
+            SELECT plz, last_modified_date, file
+            FROM {tbl_w["path"]}
+        )
+        , _pv AS (
+            SELECT last_update_dt AS last_modified_date  , plz
+            FROM {tbl_pv["path"]}
+        )
+        SELECT
+            _w.file,
+            _w.last_modified_date
+        FROM _w LEFT JOIN _pv  USING(plz, last_modified_date)
+        WHERE TRUE
+            AND _pv.plz IS NULL
+    """)
+    # download tables
+    tables = con.sql(f"""
+        SELECT
+            file, content, plz, last_modified_date
+        FROM {tbl_w["path"]}
+        INNER JOIN tables_not_scrapped USING(file,last_modified_date)
+    """).fetchall()  # TODO: Use polars instead -> add dependency
+    return tables
+
+    pass

@@ -5,6 +5,7 @@ from selenium import webdriver
 
 from eed_webscrapping_scripts.modules import decrypt_direct, decrypt_file, save_webpage
 from eed_webscrapping_scripts.pollenvorhersage import (
+    download_wepages,
     get_config,
     open_webpage_and_select_plz,
     prepare_db,
@@ -47,6 +48,8 @@ def pollenvorhersage():
 
         upload_webpage_to_db(con, file, plz, cfg)
         print("upladed")
+        webpages = download_wepages(cfg=cfg, con=con)
+        print(len(webpages))
 
     # Enter the value into the search box
 
