@@ -17,16 +17,6 @@ jobs:
       - uses: opt-nc/setup-duckdb-action@v1.0.8
         with:
           version: v1.2.0
-      - name: Get latest release tag
-        id: get-latest-release
-        run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main) --abbrev=0)
-          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
-          echo $latest_tag
-      - name: Checkout latest release
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.get-latest-release.outputs.tag }}
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
         with:
@@ -49,3 +39,6 @@ jobs:
           _environment_=$(uvx python -c "import os; print(os.getenv('_EXECUTION_ENVIRONMENT_'))")
           echo $runs_on_ga
           echo $_environment_
+          pwd
+          ls -al
+          uv run src/eed_webscrapping_scripts/pollenvorhersage/pollenvorhersage.py

@@ -2,6 +2,9 @@
 *.duckdb
 *.wal
 
+*.html
+!src/eed_webscrapping_scripts/pollenvorhersage/websites/encrypted_website.html
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
