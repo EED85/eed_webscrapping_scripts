@@ -6,8 +6,16 @@ from eed_webscrapping_scripts.pollenvorhersage import get_config
 
 @pytest.mark.parametrize(
     "database_name,schema_name, table_name, path_expected",
-    [("pollenvorhersage", "datalake", "webpages", "pollenvorhersage.datalake.webpages")],
-    ids=[("datalake.webpages")],
+    [
+        ("pollenvorhersage", "datalake", "webpages", "pollenvorhersage.datalake.webpages"),
+        (
+            "pollenvorhersage",
+            "information_layer",
+            "pollenflug_vorhersage",
+            "pollenvorhersage.information_layer.pollenflug_vorhersage",
+        ),
+    ],
+    ids=["datalake.webpages", "information_layer.pollenflug_vorhersage"],
 )
 def test_get_table_definition(database_name, schema_name, table_name, path_expected):
     cfg = get_config()
