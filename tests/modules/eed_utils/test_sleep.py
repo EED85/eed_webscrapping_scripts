@@ -1,6 +1,6 @@
 import pytest
 
-from eed_webscrapping_scripts.modules import sleep
+from eed_webscrapping_scripts.modules import sleep_random
 
 
 @pytest.mark.parametrize(
@@ -17,5 +17,5 @@ from eed_webscrapping_scripts.modules import sleep
 def test_sleep(
     minimum_seconds, maximum_seconds, seed, minimum_seconds_expected, maximum_seconds_expected
 ):
-    result = sleep(minimum_seconds, maximum_seconds, seed)
+    result = sleep_random(minimum_seconds, maximum_seconds, seed)
     assert minimum_seconds_expected <= result <= maximum_seconds_expected

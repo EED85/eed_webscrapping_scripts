@@ -2,15 +2,15 @@ import random
 import time
 
 
-def sleep(
+def sleep_random(
     minimum_seconds: float = 0, maximum_seconds: float = 1, seed: int = None, ndigits: int = None
 ) -> float:
     """
     Pauses the program execution for a random duration between minimum_seconds and maximum_seconds.
 
     Parameters:
-    minimum_seconds (float): The minimum number of seconds to sleep. Default is 0.
-    maximum_seconds (float): The maximum number of seconds to sleep. Default is 1.
+    minimum_seconds (float): The minimum number of seconds to sleep_random. Default is 0.
+    maximum_seconds (float): The maximum number of seconds to sleep_random. Default is 1.
     seed (int, optional): A seed value for the random number generator. Default is None.
 
     Returns:

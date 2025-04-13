@@ -19,14 +19,14 @@ __all__ = [
     "get_db_schema_tbl_from_table_name",
     "add_primary_key",
     # eed_utils
-    "sleep",
+    "sleep_random",
 ]
 from .duckdb_utils import (
     add_primary_key,
     check_if_primary_key_exists,
     get_db_schema_tbl_from_table_name,
 )
-from .eed_utils import sleep
+from .eed_utils import sleep_random
 from .encryption_utils import (
     decrypt,
     decrypt_direct,
