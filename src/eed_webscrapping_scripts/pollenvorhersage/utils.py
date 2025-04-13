@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from eed_webscrapping_scripts.modules import (
     add_primary_key,
     get_git_root,
+    get_table_definition,
     load_dotenv_,
     sleep_random,
 )
@@ -80,16 +81,18 @@ def upload_webpage_to_db(con, file, plz, cfg: dict, table: str = "_webpage_"):
         FROM read_text('{str(file)}')
         WHERE TRUE
     """)
-
-    con.sql(f"""CREATE TABLE IF NOT EXISTS datalake.webpages AS SELECT * FROM {table} LIMIT 0""")
+    table_webpages = get_table_definition(cfg=cfg, table_name="webpages")
+    con.sql(
+        f"""CREATE TABLE IF NOT EXISTS {table_webpages["path"]} AS SELECT * FROM {table} LIMIT 0"""
+    )
     add_primary_key(
-        table_name="datalake.webpages",
-        primary_key=("file", "last_modified_date"),
+        table_name=table_webpages["path"],
+        primary_key=table_webpages["primary_key"],
         con=con,
         if_exists="pass",
     )
     con.sql(f"""
-        INSERT OR IGNORE INTO datalake.webpages
+        INSERT OR IGNORE INTO {table_webpages["path"]}
         SELECT * FROM {table}
     """)
 
