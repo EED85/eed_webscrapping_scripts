@@ -7,31 +7,11 @@ from selenium.webdriver.common.keys import Keys
 
 from eed_webscrapping_scripts.modules import (
     add_primary_key,
+    get_environment,
     get_git_root,
     get_table_definition,
-    load_dotenv_,
     sleep_random,
 )
-
-
-def get_environment() -> str:
-    load_dotenv_()
-
-    _EXECUTION_MODE_ = os.getenv("_EXECUTION_MODE_")
-    _EXECUTION_ENVIRONMENT_ = os.getenv("_EXECUTION_ENVIRONMENT_")
-
-    if _EXECUTION_MODE_ == "IDE" and _EXECUTION_ENVIRONMENT_ == "local":
-        return "PROD"
-    elif (_EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "local") or (
-        _EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "GITHUB"
-    ):
-        return "DEV"
-    elif _EXECUTION_MODE_ == "GA" and _EXECUTION_ENVIRONMENT_ == "GITHUB":
-        return "PROD"
-    else:
-        raise ValueError(
-            f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}"
-        )
 
 
 def get_config() -> dict:

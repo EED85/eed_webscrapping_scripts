@@ -1,8 +1,6 @@
 name: daily scrapping pollenvorhersage
 
 on:
-  schedule:
-    - cron: 0 14 * * *
   workflow_dispatch:
 
 jobs:
@@ -34,6 +32,7 @@ jobs:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
           RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
           _EXECUTION_ENVIRONMENT_: ${{ vars._EXECUTION_ENVIRONMENT_ }}
+          _EXECUTION_MODE_: ${{ vars._EXECUTION_MODE_ }}
         run: |
           runs_on_ga=$(uvx python -c "import os; print(os.getenv('RUNS_ON_GA'))")
           _environment_=$(uvx python -c "import os; print(os.getenv('_EXECUTION_ENVIRONMENT_'))")

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from eed_webscrapping_scripts.dwd import download_json_to_duckdb, get_config, prepare_db
-from eed_webscrapping_scripts.modules import read_sql_file
+from eed_webscrapping_scripts.modules import ask_user_for_local_production_run, read_sql_file
 
 
 def pollenflug_gefahrenindex():
@@ -9,9 +9,9 @@ def pollenflug_gefahrenindex():
     print("START pollenflug_gefahrenindex")
     # set parameters
     cfg = get_config()
+    ask_user_for_local_production_run(cfg)
     url = cfg["pollenflug_gefahrenindex"]["url"]
     datalake = cfg["pollenflug_gefahrenindex"]["db_infos"]["datalake"]
-
     # download data
     con = prepare_db(cfg)
     download_json_to_duckdb(url, con)
@@ -32,4 +32,4 @@ def pollenflug_gefahrenindex():
 
 
 if __name__ == "__main__":
-    pollenflug_gefahrenindex()
+    con = pollenflug_gefahrenindex()

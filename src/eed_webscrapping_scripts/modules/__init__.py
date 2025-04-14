@@ -5,6 +5,8 @@ __all__ = [
     "load_dotenv_",
     "save_webpage",
     "get_table_definition",
+    "get_environment",
+    "ask_user_for_local_production_run",
     # encryption_utils
     "get_encryption_pasword",
     "get_encryption_salt",
@@ -40,7 +42,9 @@ from .encryption_utils import (
     get_encryption_salt,
 )
 from .modules import (
+    ask_user_for_local_production_run,
     connect_to_db,
+    get_environment,
     get_git_root,
     get_table_definition,
     load_dotenv_,
