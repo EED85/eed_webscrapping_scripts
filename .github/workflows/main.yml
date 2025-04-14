@@ -23,10 +23,10 @@ jobs:
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1 --branches main) --abbrev=0)
           echo "tag=$latest_tag" >> $GITHUB_OUTPUT
           echo $latest_tag
-      # - name: Checkout latest release
-      #   uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ steps.get-latest-release.outputs.tag }}
+      - name: Checkout latest release
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get-latest-release.outputs.tag }}
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
         with:
