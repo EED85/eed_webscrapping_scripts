@@ -14,11 +14,9 @@ def prepare_db(cfg, con=None):
         Useful, if con has been ommitted by inputargs.
     """
 
-    con = con or connect_to_db(cfg)
+    con = con or connect_to_db(cfg, database_name="pollenvorhersage")
     if cfg["env"]["_ENVIRONMENT_"] == "PROD":
         con.sql("CREATE DATABASE IF NOT EXISTS pollenvorhersage")
-    else:
-        con.sql("ATTACH IF NOT EXISTS 'pollenvorhersage.duckdb'")
     con.sql("USE pollenvorhersage")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
     con.sql("CREATE SCHEMA IF NOT EXISTS information_layer")
