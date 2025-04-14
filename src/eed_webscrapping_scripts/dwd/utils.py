@@ -58,4 +58,5 @@ def get_config() -> dict:
     cfg["env"]["_ENVIRONMENT_"] = _ENVIRONMENT_
     cfg["env"]["_EXECUTION_MODE_"] = os.getenv("_EXECUTION_MODE_")
     cfg["runs_on_ga"] = cfg["env"]["_EXECUTION_ENVIRONMENT_"] == "GITHUB"
+    print(f"""{cfg["env"]["_ENVIRONMENT_"]=}""")
     return cfg
