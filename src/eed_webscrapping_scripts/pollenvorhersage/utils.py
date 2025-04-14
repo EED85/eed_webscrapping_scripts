@@ -98,7 +98,7 @@ def upload_webpage_to_db(con, file, plz, cfg: dict, table: str = "_webpage_"):
 
     pass
 
-  
+
 def download_wepages(cfg, con):
     tbl_w = get_table_definition(cfg=cfg, table_name="webpages")
     tbl_pv = get_table_definition(

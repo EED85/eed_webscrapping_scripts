@@ -12,6 +12,7 @@ from eed_webscrapping_scripts.pollenvorhersage import (
     upload_webpage_to_db,
 )
 
+
 class PollenvorhersageHandler:
     def __init__(self):
         self.cfg = get_config()
@@ -53,7 +54,7 @@ class PollenvorhersageHandler:
 
             upload_webpage_to_db(con, file, plz, cfg)
             print("upladed")
-        
+
         # clean up
         match cfg["env"]["_ENVIRONMENT_"]:
             case "PROD":
@@ -64,8 +65,7 @@ class PollenvorhersageHandler:
 
         print("END")
         return con
-           
-            
+
         def extract_pollenvorhersage(self):
             cfg = self.cfg
             con = self.con
@@ -81,7 +81,6 @@ class PollenvorhersageHandler:
         # Wait for the data to load and scrape the data
         # Add your scraping logic here
 
- 
 
 if __name__ == "__main__":
     pollenvorhersage_handler = PollenvorhersageHandler()
