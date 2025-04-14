@@ -1,7 +1,7 @@
 from eed_webscrapping_scripts.dwd.pollenflug_gefahrenindex import pollenflug_gefahrenindex
 
 
-def test_integration_dwd():
+def test_integration_dwd(cfg_test):
     con = pollenflug_gefahrenindex()
     table_name = con.sql(
         "SELECT table_name FROM duckdb_tables() WHERE table_name ILIKE 'Pollenflug_Gefahrenindex%' "
