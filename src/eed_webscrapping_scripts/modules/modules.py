@@ -12,7 +12,7 @@ home_dir = os.path.expanduser("~")
 
 def load_dotenv_(path_to_env: str = None, override=False) -> dict:
     if path_to_env is None:
-        dotenv.load_dotenv()
+        dotenv.load_dotenv(override=False)
         return None
     else:
         env_variables = dotenv.dotenv_values(path_to_env)
@@ -110,3 +110,31 @@ def get_table_definition(
     schema_name_real = cfg_copy[database_name]["db_infos"][schema_name]["name"]
     table_definition["path"] = f"""{database_name}.{schema_name_real}.{table_definition["name"]}"""
     return table_definition
+
+
+def get_environment() -> str:
+    load_dotenv_()
+
+    _EXECUTION_MODE_ = os.getenv("_EXECUTION_MODE_")
+    _EXECUTION_ENVIRONMENT_ = os.getenv("_EXECUTION_ENVIRONMENT_")
+
+    if _EXECUTION_MODE_ == "IDE" and _EXECUTION_ENVIRONMENT_ == "local":
+        return "PROD"
+    elif (_EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "local") or (
+        _EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "GITHUB"
+    ):
+        return "DEV"
+    elif _EXECUTION_MODE_ == "GA" and _EXECUTION_ENVIRONMENT_ == "GITHUB":
+        return "PROD"
+    else:
+        raise ValueError(
+            f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}"
+        )
+
+
+def ask_user_for_local_production_run(cfg: dict) -> bool:
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD" and os.getenv("_EXECUTION_ENVIRONMENT_") == "local":
+        proceed = input("Do you want to execute a PRODUCTION run locally? (Y) / (N)")
+        if proceed != "Y":
+            raise ValueError("Aborted by User")
+    return True

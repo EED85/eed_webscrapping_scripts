@@ -1,9 +1,13 @@
-import os
 from pathlib import Path
 
 from selenium import webdriver
 
-from eed_webscrapping_scripts.modules import decrypt_direct, decrypt_file, save_webpage
+from eed_webscrapping_scripts.modules import (
+    ask_user_for_local_production_run,
+    decrypt_direct,
+    decrypt_file,
+    save_webpage,
+)
 from eed_webscrapping_scripts.pollenvorhersage import (
     get_config,
     open_webpage_and_select_plz,
@@ -22,13 +26,7 @@ class PollenvorhersageHandler:
 
         # set parameters
         cfg = self.cfg
-        if (
-            cfg["env"]["_ENVIRONMENT_"] == "PROD"
-            and os.getenv("_EXECUTION_ENVIRONMENT_") == "local"
-        ):
-            proceed = input("Do you want to execute a PRODUCTION run locally? (Y) / (N)")
-            if proceed != "Y":
-                raise ValueError("Aborted by User")
+        ask_user_for_local_production_run(cfg)
         url = decrypt_direct(cfg["pollenvorhersage"]["url"])
         plzs = [decrypt_direct(plz) for plz in cfg["pollenvorhersage"]["plz"]]
         print(len(plzs))

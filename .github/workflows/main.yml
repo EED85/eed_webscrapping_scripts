@@ -44,9 +44,13 @@ jobs:
           MD_TOKEN: ${{ secrets.MD_TOKEN }}
           RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
           _EXECUTION_ENVIRONMENT_: ${{ vars._EXECUTION_ENVIRONMENT_ }}
+          _EXECUTION_MODE_: ${{ vars._EXECUTION_MODE_ }}
         run: |
           runs_on_ga=$(uvx python -c "import os; print(os.getenv('RUNS_ON_GA'))")
           _environment_=$(uvx python -c "import os; print(os.getenv('_EXECUTION_ENVIRONMENT_'))")
+          _execution_mode_=$(uvx python -c "import os; print(os.getenv('_EXECUTION_EXECUTION_MODE_'))")
+
           echo $runs_on_ga
           echo $_environment_
-          uv run src/eed_webscrapping_scripts/main.py
+          echo $_execution_mode_
+          uv run src/eed_webscrapping_scripts/dwd/pollenflug_gefahrenindex.py
