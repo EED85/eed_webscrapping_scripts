@@ -14,7 +14,7 @@ def prepare_db(cfg, con=None):
     """
 
     con = con or connect_to_db(cfg)
-    if cfg["runs_on_ga"]:
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD":
         con.sql("CREATE DATABASE IF NOT EXISTS dwd")
     con.sql("USE dwd")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
