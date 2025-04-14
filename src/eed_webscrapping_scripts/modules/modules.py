@@ -110,3 +110,23 @@ def get_table_definition(
     schema_name_real = cfg_copy[database_name]["db_infos"][schema_name]["name"]
     table_definition["path"] = f"""{database_name}.{schema_name_real}.{table_definition["name"]}"""
     return table_definition
+
+
+def get_environment() -> str:
+    load_dotenv_()
+
+    _EXECUTION_MODE_ = os.getenv("_EXECUTION_MODE_")
+    _EXECUTION_ENVIRONMENT_ = os.getenv("_EXECUTION_ENVIRONMENT_")
+
+    if _EXECUTION_MODE_ == "IDE" and _EXECUTION_ENVIRONMENT_ == "local":
+        return "PROD"
+    elif (_EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "local") or (
+        _EXECUTION_MODE_ == "PYTEST" and _EXECUTION_ENVIRONMENT_ == "GITHUB"
+    ):
+        return "DEV"
+    elif _EXECUTION_MODE_ == "GA" and _EXECUTION_ENVIRONMENT_ == "GITHUB":
+        return "PROD"
+    else:
+        raise ValueError(
+            f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}"
+        )
