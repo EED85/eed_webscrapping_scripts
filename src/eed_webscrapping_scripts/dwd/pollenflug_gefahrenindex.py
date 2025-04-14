@@ -32,4 +32,4 @@ def pollenflug_gefahrenindex():
 
 
 if __name__ == "__main__":
-    pollenflug_gefahrenindex()
+    con = pollenflug_gefahrenindex()
