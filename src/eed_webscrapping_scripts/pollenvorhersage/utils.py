@@ -104,12 +104,10 @@ def download_wepages(cfg, con):
             AND _pv.plz IS NULL
     """)
     # download tables
-    tables = con.sql(f"""
+    df = con.sql(f"""
         SELECT
             file, content, plz, last_modified_date
         FROM {tbl_w["path"]}
         INNER JOIN tables_not_scrapped USING(file,last_modified_date)
-    """).fetchall()  # TODO: Use polars instead -> add dependency
-    return tables
-
-    pass
+    """).pl()
+    return df

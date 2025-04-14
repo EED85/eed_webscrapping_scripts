@@ -1,5 +1,10 @@
+import re
+from datetime import datetime
 from pathlib import Path
 
+import polars as pl
+from bs4 import BeautifulSoup
+from dateutil.parser import parse
 from selenium import webdriver
 
 from eed_webscrapping_scripts.modules import (
@@ -64,18 +69,60 @@ class PollenvorhersageHandler:
         print("END")
         return con
 
-        def extract_pollenvorhersage(self):
-            cfg = self.cfg
-            con = self.con
-            webpages = download_wepages(cfg=cfg, con=con)
-            print(webpages)
+    def extract_pollenvorhersage(self):
+        cfg = self.cfg
+        con = self.con
+        webpages = download_wepages(cfg=cfg, con=con)
+        print(webpages)
 
-        # Enter the value into the search box
+        current_date = datetime.now().date()
+        for i in range(len(webpages)):
+            content = webpages["content"][i]
+            soup = BeautifulSoup(content, "html.parser")
+            dates_to_extract = soup.find_all(class_="datum")
+            dates = list(range(len(dates_to_extract)))
+            for j in range(len(dates_to_extract)):
+                date_to_extract = dates_to_extract[j].get_text(strip=True)
+                dd_mm = re.search(r"\d{2}.\d{2}", date_to_extract)[0]
+                parsed_date = parse(f"""{dd_mm}.{current_date.year}""", dayfirst=True).date()
+                dates[j] = parsed_date
+            dates_str = [date.strftime("%Y_%m_%d") for date in dates]
+            soup_pollenarten = soup.find_all(class_="tooltip")
+            pollenarten = list(range(len(soup_pollenarten)))
+            for k in range(len(soup_pollenarten)):
+                pollenart = soup_pollenarten[k].find(class_="tooltiptext").find("img")["alt"]
+                pollenarten[k] = pollenart
 
-        # soup.find_all('img', {'title': True})
-        # soup.find_all(class_='datum')
-        # soup.find_all(class_='tooltip')
+            soup_belastungen = soup.find_all("img", {"title": True})
+            belastungen = [
+                belastung["title"]
+                for belastung in soup_belastungen[: (len(dates) * len(soup_pollenarten))]
+            ]
+            reshaped_values = [
+                belastungen[i : i + len(dates)] for i in range(0, len(belastungen), len(dates))
+            ]
 
+            df = (
+                pl.DataFrame(reshaped_values, schema=dates_str)
+                .with_columns(pl.Series("pollenart", pollenarten))
+                .unpivot(index="pollenart")
+            )
+            print(len(df))
+            mapping = {
+                "keine Belastung": 0,
+                "schwache Belastung": 1,
+                "mittlere Belastung": 2,
+                "hohe Belastung": 3,
+            }
+            con.sql(f"""
+                -- CREATE OR REPLACE TEMP TABLE pollenflug AS
+                SELECT
+                    * EXCLUDE(variable)
+                    , strptime(variable, '%Y_%m_%d')::DATE AS date
+                    , MAP {str(mapping)}[value] AS belastung
+                FROM df
+                ORDER BY pollenart, date
+            """)
         # Wait for the data to load and scrape the data
         # Add your scraping logic here
 
