@@ -130,3 +130,11 @@ def get_environment() -> str:
         raise ValueError(
             f"No enviroment specified for {_EXECUTION_MODE_=}, {_EXECUTION_ENVIRONMENT_=}"
         )
+
+
+def ask_user_for_local_production_run(cfg: dict) -> bool:
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD" and os.getenv("_EXECUTION_ENVIRONMENT_") == "local":
+        proceed = input("Do you want to execute a PRODUCTION run locally? (Y) / (N)")
+        if proceed != "Y":
+            raise ValueError("Aborted by User")
+    return True
