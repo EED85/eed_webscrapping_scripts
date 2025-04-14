@@ -12,7 +12,7 @@ home_dir = os.path.expanduser("~")
 
 def load_dotenv_(path_to_env: str = None, override=False) -> dict:
     if path_to_env is None:
-        dotenv.load_dotenv()
+        dotenv.load_dotenv(override=False)
         return None
     else:
         env_variables = dotenv.dotenv_values(path_to_env)
