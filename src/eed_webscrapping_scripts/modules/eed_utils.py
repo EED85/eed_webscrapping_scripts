@@ -23,3 +23,16 @@ def sleep_random(
         sleep_in_seconds = round(sleep_in_seconds, ndigits)
     time.sleep(sleep_in_seconds)
     return sleep_in_seconds
+
+
+def decode_string(encoded_string: str, encode: str = "latin1", decode: str = "utf-8") -> str:
+    """
+    Decodes an encoded string from Latin-1 to UTF-8.
+
+    Parameters:
+    encoded_string (str): The encoded string to decode.
+
+    Returns:
+    str: The decoded string.
+    """
+    return encoded_string.encode(encode).decode(decode)
