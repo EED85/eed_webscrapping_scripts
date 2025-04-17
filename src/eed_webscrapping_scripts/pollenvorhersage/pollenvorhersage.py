@@ -2,13 +2,14 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-import polars as pl
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 from selenium import webdriver
 
 from eed_webscrapping_scripts.modules import (
     ask_user_for_local_production_run,
+    create_table_from_lists,
+    decode_string,
     decrypt_direct,
     decrypt_file,
     save_webpage,
@@ -91,28 +92,40 @@ class PollenvorhersageHandler:
             pollenarten = list(range(len(soup_pollenarten)))
             for k in range(len(soup_pollenarten)):
                 pollenart = soup_pollenarten[k].find(class_="tooltiptext").find("img")["alt"]
-                pollenarten[k] = pollenart
+                pollenarten[k] = decode_string(pollenart)
 
             soup_belastungen = soup.find_all("img", {"title": True})
             belastungen = [
                 belastung["title"]
                 for belastung in soup_belastungen[: (len(dates) * len(soup_pollenarten))]
             ]
-            reshaped_values = [
-                belastungen[i : i + len(dates)] for i in range(0, len(belastungen), len(dates))
-            ]
 
-            df = (
-                pl.DataFrame(reshaped_values, schema=dates_str)
-                .with_columns(pl.Series("pollenart", pollenarten))
-                .unpivot(index="pollenart")
+            df = create_table_from_lists(
+                column_names=dates_str,
+                values=belastungen,
+                row_indices=pollenarten,
+                row_indices_column_name="pollenart",
             )
+            df = df.unpivot(index="pollenart")
+
+            # TODO: Encoding using polars does not work yet, normla function works
+            # (
+            #     df
+            #     .with_columns(
+            #         pl.col("pollenart")
+            #         .map_elements(
+            #             lambda x: decode_string(x)
+            #         )
+            #         .alias("pollenart_decoded")
+            #     )
+            # )
+
             print(len(df))
             mapping = {
                 "keine Belastung": 0,
                 "schwache Belastung": 1,
                 "mittlere Belastung": 2,
-                "hohe Belastung": 3,
+                "starke Belastung": 3,
             }
             con.sql(f"""
                 -- CREATE OR REPLACE TEMP TABLE pollenflug AS
@@ -121,6 +134,7 @@ class PollenvorhersageHandler:
                     , strptime(variable, '%Y_%m_%d')::DATE AS date
                     , MAP {str(mapping)}[value] AS belastung
                 FROM df
+                WHERE pollenart = 'Gräser'
                 ORDER BY pollenart, date
             """)
         # Wait for the data to load and scrape the data
