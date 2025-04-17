@@ -44,14 +44,14 @@ def read_sql_file(path_to_file: str, git_root: str = None) -> str:
     return sql
 
 
-def connect_to_db(cfg=None):
+def connect_to_db(cfg=None, database_name: str = "dwd"):
     """Connects to Motherduck database.
     Needs Github secret ``MD_TOKEN`` defined, if used in github Actions.
     Needs ``.motherduck_token`` file in your home directory.
     Returns:
         DuckDB / Motherduck connection:
     """
-    if cfg["env"]["_ENVIRONMENT_"] == "PROD":  # TODO: ES-282 DWD anpasse
+    if cfg["env"]["_ENVIRONMENT_"] == "PROD":
         try:
             with open(os.path.join(home_dir, ".motherduck_token")) as f:
                 md_token = f.read()
@@ -62,8 +62,7 @@ def connect_to_db(cfg=None):
         print("Connected to Motherduck")
     else:
         con = duckdb.connect()
-        con.sql("ATTACH ':memory:' AS dwd;")
-        con.sql("USE dwd")
+        con.sql(f"ATTACH ':memory:' AS {database_name};")
         print("Connected to in memory duckdb database")
     return con
 

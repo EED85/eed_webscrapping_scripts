@@ -22,8 +22,17 @@ pollenvorhersage:
           primary_key:
             - file
             - last_modified_date
-    information_layer: "information_layer"
-
+    information_layer:
+      name: "information_layer"
+      tables:
+        pollenflug_vorhersage:
+          name: pollenflug_vorhersage
+          path: ""
+          primary_key:
+            - last_update_dt
+            - plz
+            - pollenart
+            - date
 git_root: ""
 env:
   _EXECUTION_ENVIRONMENT_: ""

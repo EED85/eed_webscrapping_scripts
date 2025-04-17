@@ -1,4 +1,4 @@
-from eed_webscrapping_scripts.modules import connect_to_db
+from eed_webscrapping_scripts.modules import connect_to_db, get_table_definition
 from eed_webscrapping_scripts.modules.duckdb_utils import add_primary_key
 
 
@@ -14,11 +14,9 @@ def prepare_db(cfg, con=None):
         Useful, if con has been ommitted by inputargs.
     """
 
-    con = con or connect_to_db(cfg)
+    con = con or connect_to_db(cfg, database_name="pollenvorhersage")
     if cfg["env"]["_ENVIRONMENT_"] == "PROD":
         con.sql("CREATE DATABASE IF NOT EXISTS pollenvorhersage")
-    else:
-        con.sql("ATTACH IF NOT EXISTS 'pollenvorhersage.duckdb'")
     con.sql("USE pollenvorhersage")
     con.sql("CREATE SCHEMA IF NOT EXISTS datalake")
     con.sql("CREATE SCHEMA IF NOT EXISTS information_layer")
@@ -30,10 +28,12 @@ def prepare_db(cfg, con=None):
         )
     """
     )
-
+    table_pollenflug_vorhersage = get_table_definition(
+        cfg=cfg, schema_name="information_layer", table_name="pollenflug_vorhersage"
+    )
     con.sql(
-        """
-        CREATE TABLE IF NOT EXISTS information_layer.pollenflug_vorhersage(
+        f"""
+        CREATE TABLE IF NOT EXISTS {table_pollenflug_vorhersage["path"]}(
             table_name VARCHAR
             , last_update TIMESTAMP
             , last_update_dt DATE
@@ -46,8 +46,8 @@ def prepare_db(cfg, con=None):
     )
 
     add_primary_key(
-        table_name="information_layer.pollenflug_vorhersage",
-        primary_key=("last_update_dt", "plz", "pollenart", "date"),
+        table_name=table_pollenflug_vorhersage["path"],
+        primary_key=table_pollenflug_vorhersage["primary_key"],
         con=con,
         if_exists="pass",
     )
