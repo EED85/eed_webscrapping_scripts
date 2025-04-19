@@ -39,6 +39,10 @@ uvx pre-commit install
 
 Please ensure to create a pull request before making any changes.
 
+### Test if package is installed correcty
+After installation, you can check the correct installation using the cli command ``hello_world``.
+``uv run hello_world``
+
 ## Pipelines
 
 ### ruff
