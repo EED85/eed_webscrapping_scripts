@@ -29,6 +29,12 @@ con = pollenvorhersage_handler.fetch_and_store_html()
 ```
 
 ## Developement
+
+### Roadmap
+Issues are created on a private Jira Board. Please request access, if you want to contribute.
+Use Atlassians VS Code Extension to create a new Branch based on an issue. Please merge the PR using smart commits in order to close the issue -> ```<issue-key> #done #comment <my optional comment on jira issue>```
+
+### Installation
 To install the repository, follow these steps:
 ```shell
 gh repo clone EED85/eed_webscrapping_scripts
