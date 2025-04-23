@@ -10,7 +10,7 @@ Data is collected daily via GitHub Actions and stored in a private database for 
 #### running the script
 To run the script, use:
 `uv run rc/eed_webscrapping_scripts/main.py`
-Please note, that the programm runs locally, the data is not stored in motherduck, only in a local in memory duckdb database.
+Please note, that the program runs locally, the data is not stored in motherduck, only in a local in memory duckdb database.
 
 ## Pollenvorhersage
 For personal use only.
@@ -52,7 +52,7 @@ After installation, you can check the correct installation using the cli command
 ## Pipelines
 
 ### ruff
-runs on every commit and fails, if code is not well formated
+runs on every commit and fails, if code is not well formatted
 
 ### pytests
 runs on every commit and fails, if any pytest fails
@@ -65,4 +65,4 @@ runs daily main.py and scrappes data
 
 #### Developement
 add if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
-before step Checkout latest release for developement puposese
+before step Checkout latest release for development purposes
