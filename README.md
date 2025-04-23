@@ -10,7 +10,7 @@ Data is collected daily via GitHub Actions and stored in a private database for 
 #### running the script
 To run the script, use:
 `uv run rc/eed_webscrapping_scripts/main.py`
-Please note, that the programm runs locally, the data is not stored in motherduck, only in a local in memory duckdb database.
+Please note, that the program runs locally, the data is not stored in motherduck, only in a local in memory duckdb database.
 
 ## Pollenvorhersage
 For personal use only.
@@ -29,6 +29,12 @@ con = pollenvorhersage_handler.fetch_and_store_html()
 ```
 
 ## Developement
+
+### Roadmap
+Issues are created on a private Jira Board. Please request access, if you want to contribute.
+Use Atlassians VS Code Extension to create a new Branch based on an issue. Please merge the PR using smart commits in order to close the issue -> ```<issue-key> #done #comment <my optional comment on jira issue>```
+
+### Installation
 To install the repository, follow these steps:
 ```shell
 gh repo clone EED85/eed_webscrapping_scripts
@@ -46,7 +52,7 @@ After installation, you can check the correct installation using the cli command
 ## Pipelines
 
 ### ruff
-runs on every commit and fails, if code is not well formated
+runs on every commit and fails, if code is not well formatted
 
 ### pytests
 runs on every commit and fails, if any pytest fails
@@ -59,4 +65,4 @@ runs daily main.py and scrappes data
 
 #### Developement
 add if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
-before step Checkout latest release for developement puposese
+before step Checkout latest release for development purposes
