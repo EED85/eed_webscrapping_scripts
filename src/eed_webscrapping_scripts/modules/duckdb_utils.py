@@ -71,3 +71,54 @@ def add_primary_key(
     else:
         raise ValueError(f""" not implemented for {primary_key_exists=}, {if_exists=} """)
     return primary_key_was_added
+
+
+def datatbase_is_attached(database_name: str, con: duckdb.duckdb.DuckDBPyConnection = None) -> bool:
+    """
+    Checks if a database is attached to the current DuckDB connection.
+
+    Parameters
+    ----------
+    database_name : str
+        The name of the database to check.
+    con : duckdb.duckdb.DuckDBPyConnection, optional
+        The DuckDB connection to use. If no connection is provided, a new connection will be created.
+
+    Returns
+    -------
+    bool
+        True if the database is attached, False otherwise.
+    """
+    con = con or duckdb.connect()
+    sql = f"""
+        SELECT COUNT(*) > 0 AS database_is_attached
+        FROM duckdb_databases()
+        WHERE database_name = '{database_name}'
+    """
+    datatbase_is_attached = con.sql(sql).fetchall()[0][0]
+    return datatbase_is_attached
+
+
+# def copy_database(
+#     source_database: str,
+#     target_database: str,
+#     con: duckdb.duckdb.DuckDBPyConnection = None,
+#     if_exists: str = "fail",
+# ) -> bool:
+#     con = con or duckdb.connect()
+
+#     target_database_exists = file_exists(f"{target_database}.duckdb")
+#     source_database_exists = file_exists(f"{source_database}.duckdb")
+
+#     if not target_database_exists and if_exists == "fail":
+#         raise FileExistsError(f"File {target_database} already exists.")
+#     if not source_database_exists:
+#         raise FileNotFoundError(f"File {source_database} does not exist.")
+
+#     con.sql(f"ATTACH IF NOT EXISTS '{source_database}' AS source")
+#     con.sql(f"ATTACH IF NOT EXISTS '{target_database}' AS target")
+#     sql = f"""
+#         COPY source TO target
+#     """
+#     con.sql(sql)
+#     return True
