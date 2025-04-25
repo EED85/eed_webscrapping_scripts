@@ -1,4 +1,9 @@
+import logging
+import pathlib
+
 import duckdb
+
+from eed_webscrapping_scripts.eed_basic_utils import file_exists
 
 
 def check_if_primary_key_exists(
@@ -99,26 +104,44 @@ def datatbase_is_attached(database_name: str, con: duckdb.duckdb.DuckDBPyConnect
     return datatbase_is_attached
 
 
-# def copy_database(
-#     source_database: str,
-#     target_database: str,
-#     con: duckdb.duckdb.DuckDBPyConnection = None,
-#     if_exists: str = "fail",
-# ) -> bool:
-#     con = con or duckdb.connect()
+def save_database(
+    source_database: str,
+    target_database: str,
+    con: duckdb.duckdb.DuckDBPyConnection = None,
+    if_exists: str = "fail",
+) -> bool:
+    con = con or duckdb.connect()
 
-#     target_database_exists = file_exists(f"{target_database}.duckdb")
-#     source_database_exists = file_exists(f"{source_database}.duckdb")
+    target_database_exists = False
+    source_database_exists = False
+    target_database_attached = datatbase_is_attached(target_database, con=con)
+    source_database_attached = datatbase_is_attached(source_database, con=con)
 
-#     if not target_database_exists and if_exists == "fail":
-#         raise FileExistsError(f"File {target_database} already exists.")
-#     if not source_database_exists:
-#         raise FileNotFoundError(f"File {source_database} does not exist.")
+    if not target_database_attached:
+        target_database_exists = file_exists(f"{target_database}")
+    if not source_database_attached:
+        source_database_exists = file_exists(f"{source_database}")
 
-#     con.sql(f"ATTACH IF NOT EXISTS '{source_database}' AS source")
-#     con.sql(f"ATTACH IF NOT EXISTS '{target_database}' AS target")
-#     sql = f"""
-#         COPY source TO target
-#     """
-#     con.sql(sql)
-#     return True
+    if not (source_database_exists or source_database_attached):
+        raise FileNotFoundError(
+            f"File {source_database} does not exist and is not attached to con."
+        )
+
+    if if_exists == "fail":
+        if not (target_database_exists or target_database_attached):
+            raise FileExistsError(f"File {target_database} already exists or is attached.")
+    else:
+        if target_database_exists:
+            pathlib.Path(target_database).unlink()
+            logging.debug(f"File {target_database} deleted.")
+        elif target_database_attached:
+            con.sql(f"DETACH {target_database}")
+            logging.debug(f"Database {target_database} detached.")
+
+    con.sql(f"ATTACH IF NOT EXISTS '{source_database}' AS source")
+    con.sql(f"ATTACH IF NOT EXISTS '{target_database}' AS target")
+    sql = """
+        COPY source TO target
+    """
+    con.sql(sql)
+    return True
