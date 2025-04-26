@@ -84,3 +84,15 @@ def prepare_db(cfg_test: dict):
     Path.unlink(f"{database}.duckdb")
 
     # TODO find all duckdb files, that shall not be versioned in this repo and delete them
+
+
+@pytest.fixture(scope="session")
+def prepare_files(cfg_test):
+    import tempfile
+
+    tempdir = Path(tempfile.gettempdir())
+    file_path = tempdir / "existing_file.txt"
+    file_path.touch()
+    cfg_test["tempdir"] = tempdir
+    yield cfg_test
+    file_path.unlink()
