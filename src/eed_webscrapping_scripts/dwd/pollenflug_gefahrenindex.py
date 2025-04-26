@@ -33,3 +33,4 @@ def pollenflug_gefahrenindex():
 
 if __name__ == "__main__":
     con = pollenflug_gefahrenindex()
+    con.close()

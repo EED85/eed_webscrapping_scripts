@@ -9,4 +9,5 @@ env:
   _EXECUTION_ENVIRONMENT_: ""
   _ENVIRONMENT_: ""
   _EXECUTION_MODE_: ""
+  _DBINSTANCE_INACTIVITY_TTL_: "5s"
 runs_on_ga: ""
