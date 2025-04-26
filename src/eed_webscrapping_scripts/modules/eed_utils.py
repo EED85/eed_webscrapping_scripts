@@ -35,4 +35,7 @@ def decode_string(encoded_string: str, encode: str = "latin1", decode: str = "ut
     Returns:
     str: The decoded string.
     """
-    return encoded_string.encode(encode).decode(decode)
+    decoded_string = encoded_string.encode(encode).decode(decode)
+    if encode == "latin1" and decode == "utf-8":
+        decoded_string = decoded_string.replace(r"\xc3\x9f", "ß").replace(r"\xc3\xa4", "ä")
+    return decoded_string
