@@ -59,6 +59,9 @@ def connect_to_db(cfg=None):
             md_token = os.getenv("MD_TOKEN")
 
         con = duckdb.connect(f"md:?motherduck_token={md_token.strip()}")
+        con.execute(
+            f"""SET motherduck_dbinstance_inactivity_ttl='{cfg["env"]["_DBINSTANCE_INACTIVITY_TTL_"]}'"""
+        )
         print("Connected to Motherduck")
     else:
         con = duckdb.connect()

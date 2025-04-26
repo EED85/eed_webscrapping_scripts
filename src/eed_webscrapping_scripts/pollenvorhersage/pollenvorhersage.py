@@ -77,3 +77,4 @@ class PollenvorhersageHandler:
 if __name__ == "__main__":
     pollenvorhersage_handler = PollenvorhersageHandler()
     con = pollenvorhersage_handler.fetch_and_store_html()
+    con.close()
