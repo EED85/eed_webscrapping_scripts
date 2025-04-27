@@ -2,6 +2,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+import polars as pl
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 from selenium import webdriver
@@ -109,16 +110,11 @@ class PollenvorhersageHandler:
             df = df.unpivot(index="pollenart")
 
             # TODO: Encoding using polars does not work yet, normla function works
-            # (
-            #     df
-            #     .with_columns(
-            #         pl.col("pollenart")
-            #         .map_elements(
-            #             lambda x: decode_string(x)
-            #         )
-            #         .alias("pollenart_decoded")
-            #     )
-            # )
+            df = df.with_columns(
+                pl.col("pollenart")
+                .map_elements(lambda x: decode_string(x))
+                .alias("pollenart_decoded")
+            )
 
             print(len(df))
             mapping = {
