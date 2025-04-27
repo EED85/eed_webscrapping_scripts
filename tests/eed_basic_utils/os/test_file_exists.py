@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from eed_webscrapping_scripts.modules import file_exists
+from eed_webscrapping_scripts.eed_basic_utils import file_exists
 
 
 @pytest.mark.parametrize(

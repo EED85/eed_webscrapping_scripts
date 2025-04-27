@@ -1,6 +1,6 @@
 import pytest
 
-from eed_webscrapping_scripts.modules import sleep_random
+from eed_webscrapping_scripts.eed_basic_utils import sleep_random
 
 
 @pytest.mark.parametrize(
