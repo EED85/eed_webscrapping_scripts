@@ -1,5 +1,6 @@
 import logging
 import pathlib
+from pathlib import Path
 
 import duckdb
 
@@ -137,11 +138,33 @@ def download_database(
 
     con.sql(f"ATTACH IF NOT EXISTS '{target_database}' AS target")
     try:
-        sql = """
-            COPY source TO target
-        """
+        sql = f"""COPY FROM DATABASE {source_database} TO target"""
         con.sql(sql)
+        con.sql("DETACH target")
+        if not file_exists(target_database):
+            raise FileNotFoundError(f"File {target_database} was not created.")
+        logging.info(f"Database {source_database} copied to {target_database}")
+        logging.debug(f"{Path.cwd() / target_database} created.")
     except Exception as e:
         logging.error(f"Database {source_database} could not be copied to {target_database}")
         raise ValueError from e
     return True
+
+
+if __name__ == "__main__":
+    from eed_webscrapping_scripts.modules import connect_to_db
+
+    cfg = {"env": {"_ENVIRONMENT_": "PROD", "_DBINSTANCE_INACTIVITY_TTL_": "1s"}}
+    con = connect_to_db(cfg)
+    source_db = "dwd"
+    target_db = "dwd_backup.duckdb"
+    # Example usage
+    try:
+        download_database(source_db, target_db, con, if_exists="replace")
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+    finally:
+        con.close()
+    con_local = duckdb.connect(target_db)
+    _d = con_local.sql("FROM duckdb_databases()").fetchall()
+    print(_d)
