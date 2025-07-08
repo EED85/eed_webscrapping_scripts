@@ -8,13 +8,21 @@ def sleep_random(
     """
     Pauses the program execution for a random duration between minimum_seconds and maximum_seconds.
 
-    Parameters:
-    minimum_seconds (float): The minimum number of seconds to sleep_random. Default is 0.
-    maximum_seconds (float): The maximum number of seconds to sleep_random. Default is 1.
-    seed (int, optional): A seed value for the random number generator. Default is None.
+    Parameters
+    ----------
+    minimum_seconds : float, optional
+        The minimum number of seconds to sleep. Default is 0.
+    maximum_seconds : float, optional
+        The maximum number of seconds to sleep. Default is 1.
+    seed : int, optional
+        A seed value for the random number generator. Default is None.
+    ndigits : int, optional
+        The number of decimal places to round the sleep duration to. Default is None.
 
-    Returns:
-    float: The actual number of seconds the program slept.
+    Returns
+    -------
+    float
+        The actual number of seconds the program slept.
     """
     if seed is not None:
         random.seed(seed)

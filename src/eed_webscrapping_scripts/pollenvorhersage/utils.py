@@ -5,11 +5,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from eed_webscrapping_scripts.eed_basic_utils import sleep_random
 from eed_webscrapping_scripts.modules import (
     add_primary_key,
     get_environment,
     get_git_root,
-    sleep_random,
 )
 
 
