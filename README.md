@@ -6,6 +6,7 @@ Repository for ingesting public data into a database and performing basic data t
 ### Pollenflug Gefahrenindex
 Data is collected daily via GitHub Actions and stored in a private database for non-commercial and personal use only.
 
+[![daily scrapping](https://github.com/EED85/eed_webscrapping_scripts/actions/workflows/main.yml/badge.svg)](https://github.com/EED85/eed_webscrapping_scripts/actions/workflows/main.yml)
 
 #### running the script
 To run the script, use:
