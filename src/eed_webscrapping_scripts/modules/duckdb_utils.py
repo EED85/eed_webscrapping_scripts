@@ -3,8 +3,7 @@ import pathlib
 from pathlib import Path
 
 import duckdb
-
-from eed_webscrapping_scripts.eed_basic_utils import file_exists
+from eed_basic_utils.os import file_exists
 
 
 def check_if_primary_key_exists(
