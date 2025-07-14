@@ -226,8 +226,8 @@ wheels = [
 
 [[package]]
 name = "eed-basic-utils"
-version = "0.1.2"
-source = { git = "https://github.com/EED85/eed_basic_utils#f114bbab0420599433f5588557e4698a222a1879" }
+version = "1.0.0"
+source = { git = "https://github.com/EED85/eed_basic_utils#9f37bb4d90dadd2b92ddf24152f698e580d28209" }
 
 [[package]]
 name = "eed-webscrapping-scripts"

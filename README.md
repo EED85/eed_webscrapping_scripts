@@ -67,3 +67,7 @@ runs daily main.py and scrappes data
 #### Developement
 add if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
 before step Checkout latest release for development purposes
+
+## EED Packages
+
+All EED packages used in this project (such as `eed_basic_utils`) are installed directly from GitHub. Pytests are executed within each respective repository.
