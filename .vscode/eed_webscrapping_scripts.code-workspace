@@ -4,8 +4,11 @@
 			"path": ".."
 		},
 		{
-			"path": "../../eed_basic_utils"
-		}
+			"path": "../../../EED-Solutions/eed_basic_utils"
+		},
+		{
+			"path": "../../../EED-Solutions/eed_package_template"
+		},
 	],
 	"settings": {}
 }
