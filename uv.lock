@@ -225,19 +225,13 @@ wheels = [
 ]
 
 [[package]]
-name = "eed-basic-utils"
-version = "1.0.0"
-source = { git = "https://github.com/EED85/eed_basic_utils#9f37bb4d90dadd2b92ddf24152f698e580d28209" }
-
-[[package]]
 name = "eed-webscrapping-scripts"
-version = "0.1.0"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "cryptography" },
     { name = "duckdb" },
-    { name = "eed-basic-utils" },
     { name = "gitpython" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
@@ -258,7 +252,6 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.13.3" },
     { name = "cryptography", specifier = ">=44.0.2" },
     { name = "duckdb", specifier = ">=1.2.0" },
-    { name = "eed-basic-utils", git = "https://github.com/EED85/eed_basic_utils" },
     { name = "gitpython", specifier = ">=3.1.44" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "pyyaml", specifier = ">=6.0.2" },
