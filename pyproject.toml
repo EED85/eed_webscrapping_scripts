@@ -1,6 +1,6 @@
 [project]
 name = "eed-webscrapping-scripts"
-version = "0.4.0"
+version = "0.4.1"
 description = "Add your description here"
 readme = "README.md"
 authors = [
@@ -56,4 +56,4 @@ select = [
 ignore = ["E501"]  # Line too long (let black handle this)
 
 [tool.uv.sources]
-eed-basic-utils = { git = "https://github.com/EED85/eed_basic_utils" }
+eed-basic-utils = { git = "https://github.com/EED-Solutions/eed_basic_utils" }
