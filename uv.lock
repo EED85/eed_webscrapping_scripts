@@ -231,7 +231,7 @@ source = { git = "https://github.com/EED-Solutions/eed_basic_utils#24ce7030d42ab
 
 [[package]]
 name = "eed-webscrapping-scripts"
-version = "0.4.0"
+version = "0.4.1"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
