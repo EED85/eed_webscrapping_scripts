@@ -9,6 +9,12 @@
 		{
 			"path": "../../../EED-Solutions/eed_package_template"
 		},
+		{
+			"path": "../../../EED-Solutions/eed_gha_workflows"
+		},
+		{
+			"path": "../../../EED-Solutions/eed_docker_python_uv"
+		}
 	],
 	"settings": {}
 }
