@@ -64,6 +64,9 @@ When a tag is pushed to the main master, then all database views are beeing recr
 ### daily scrapping
 runs daily main.py and scrappes data
 
+#### info
+Scheduled workflows are disabled automatically after 60 days of repository inactivity.
+
 #### Developement
 add if: github.ref == 'refs/heads/master' # TODO for developement issues - remove before merge in master
 before step Checkout latest release for development purposes
