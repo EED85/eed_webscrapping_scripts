@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.11"
 
 [[package]]
@@ -242,6 +242,7 @@ dependencies = [
     { name = "cryptography" },
     { name = "duckdb" },
     { name = "eed-basic-utils" },
+    { name = "filelock" },
     { name = "gitpython" },
     { name = "h11" },
     { name = "python-dotenv" },
@@ -265,6 +266,7 @@ requires-dist = [
     { name = "cryptography", specifier = ">=44.0.2" },
     { name = "duckdb", specifier = "==1.4.3" },
     { name = "eed-basic-utils", git = "https://github.com/EED-Solutions/eed_basic_utils" },
+    { name = "filelock", specifier = ">=3.20.3" },
     { name = "gitpython", specifier = ">=3.1.44" },
     { name = "h11", specifier = ">=0.16.0" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
