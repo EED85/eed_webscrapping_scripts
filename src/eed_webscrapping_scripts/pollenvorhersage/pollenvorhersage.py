@@ -1,6 +1,9 @@
 from pathlib import Path
 
+import loguru
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 from eed_webscrapping_scripts.modules import (
     ask_user_for_local_production_run,
@@ -14,6 +17,8 @@ from eed_webscrapping_scripts.pollenvorhersage import (
     prepare_db,
     upload_webpage_to_db,
 )
+
+logger = loguru.logger
 
 
 class PollenvorhersageHandler:
@@ -34,9 +39,11 @@ class PollenvorhersageHandler:
         con = self.con
 
         for _i_, plz in enumerate(plzs):
-            print(f"{_i_=}")
+            logger.trace(f"Processing PLZ {_i_=}")
             if cfg["env"]["_ENVIRONMENT_"] == "PROD":
-                driver = webdriver.Chrome()
+                logger.debug("Initializing Chrome WebDriver with automatic driver management")
+                service = Service(ChromeDriverManager().install())
+                driver = webdriver.Chrome(service=service)
                 driver = open_webpage_and_select_plz(url, plz, driver)
                 file_rel = Path("pollenvorhersage", "websites", f"{plz}.html")
                 file = Path(cfg["git_root"], file_rel)
