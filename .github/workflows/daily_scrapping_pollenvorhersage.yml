@@ -14,7 +14,7 @@ jobs:
           fetch-depth: 0
       - uses: opt-nc/setup-duckdb-action@v1.0.8
         with:
-          version: v1.2.0
+          version: v1.4.1
       - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
         uses: astral-sh/setup-uv@v4
         with:
