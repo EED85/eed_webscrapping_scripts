@@ -8,7 +8,7 @@ from eed_basic_utils.os import file_exists
 
 def check_if_primary_key_exists(
     table_name: str,
-    con: duckdb.duckdb.DuckDBPyConnection,
+    con: duckdb.DuckDBPyConnection,
     schema_name: str = None,
     database_name: str = None,
 ) -> bool:
@@ -28,7 +28,7 @@ def check_if_primary_key_exists(
 
 
 def get_db_schema_tbl_from_table_name(
-    table_name: str, con: duckdb.duckdb.DuckDBPyConnection = None
+    table_name: str, con: duckdb.DuckDBPyConnection = None
 ) -> list[str, str]:
     parse_table_name = table_name.split(".")
     table_name = parse_table_name[-1]
@@ -48,7 +48,7 @@ def get_db_schema_tbl_from_table_name(
 def add_primary_key(
     table_name: str,
     primary_key: tuple[str] | set[str] | list[str],
-    con: duckdb.duckdb.DuckDBPyConnection,
+    con: duckdb.DuckDBPyConnection,
     if_exists: str = "fail",
 ) -> bool:
     database_name, schema_name, table_name = get_db_schema_tbl_from_table_name(table_name, con=con)
@@ -78,7 +78,7 @@ def add_primary_key(
     return primary_key_was_added
 
 
-def datatbase_is_attached(database_name: str, con: duckdb.duckdb.DuckDBPyConnection = None) -> bool:
+def datatbase_is_attached(database_name: str, con: duckdb.DuckDBPyConnection = None) -> bool:
     """
     Checks if a database is attached to the current DuckDB connection.
 
@@ -86,7 +86,7 @@ def datatbase_is_attached(database_name: str, con: duckdb.duckdb.DuckDBPyConnect
     ----------
     database_name : str
         The name of the database to check.
-    con : duckdb.duckdb.DuckDBPyConnection, optional
+    con : duckdb.DuckDBPyConnection, optional
         The DuckDB connection to use. If no connection is provided, a new connection will be created.
 
     Returns
@@ -107,7 +107,7 @@ def datatbase_is_attached(database_name: str, con: duckdb.duckdb.DuckDBPyConnect
 def download_database(
     source_database: str,
     target_database: str,
-    con: duckdb.duckdb.DuckDBPyConnection,
+    con: duckdb.DuckDBPyConnection,
     if_exists: str = "fail",
     if_error_close_connection: bool = True,
 ) -> bool:
