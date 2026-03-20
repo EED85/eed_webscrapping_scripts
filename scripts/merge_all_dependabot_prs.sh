@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Script to find and merge all open dependabot PRs
+# Each PR is processed in a temp cloned repo to avoid branch checkout issues
 # Usage: ./merge_all_dependabot_prs.sh [timeout_seconds]
 # Example: ./merge_all_dependabot_prs.sh 600
-
-set -e
 
 # Colors for output
 RED='\033[0;31m'
@@ -60,7 +59,7 @@ main() {
 
     if [[ -z "$PR_NUMBERS" ]]; then
         log_success "No open dependabot PRs found"
-        exit 0
+        return 0
     fi
 
     # Convert to array
@@ -102,12 +101,16 @@ main() {
 
     if [[ $FAILED -gt 0 ]]; then
         log_error "Failed: $FAILED"
-        exit 1
+        return 1
     else
         log_success "All PRs processed successfully!"
-        exit 0
+        return 0
     fi
 }
 
 # Run main function
-main
+if main; then
+    exit 0
+else
+    exit 1
+fi

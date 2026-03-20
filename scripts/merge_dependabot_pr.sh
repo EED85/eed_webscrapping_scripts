@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Script to automatically merge dependabot PRs after triggering CI
+# This script clones the repo to a temp directory to avoid issues with checking out branches
 # Usage: ./merge_dependabot_pr.sh <PR_NUMBER> [timeout_seconds]
 # Example: ./merge_dependabot_pr.sh 89 600
 
-set -e
+# Note: Don't use 'set -e' here because we need custom error handling for cleanup
 
 # Colors for output
 RED='\033[0;31m'
@@ -17,6 +18,7 @@ NC='\033[0m' # No Color
 PR_NUMBER="${1:-}"
 TIMEOUT="${2:-600}"  # Default 10 minutes
 POLL_INTERVAL=30      # Check status every 30 seconds
+TEMP_DIR=""           # Will be set later
 
 # Validation
 if [[ -z "$PR_NUMBER" ]]; then
@@ -53,31 +55,79 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+cleanup() {
+    if [[ -n "$TEMP_DIR" ]] && [[ -d "$TEMP_DIR" ]]; then
+        log_info "Cleaning up temp directory: $TEMP_DIR"
+        rm -rf "$TEMP_DIR"
+    fi
+}
+
+# Setup cleanup trap
+trap cleanup EXIT
+
 # Main workflow
 main() {
     log_info "Processing PR #${PR_NUMBER}"
 
-    # Get PR details
-    log_info "Fetching PR details..."
-    PR_DATA=$(gh pr view "$PR_NUMBER" --json headRefName,statusCheckRollup 2>/dev/null) || {
-        log_error "Failed to fetch PR #${PR_NUMBER}"
-        exit 1
+    # Get current git remote URL
+    CURRENT_DIR=$(pwd)
+    if ! cd "$CURRENT_DIR" 2>/dev/null; then
+        log_error "Cannot access current directory"
+        return 1
+    fi
+
+    REPO_URL=$(gh repo view --json url --jq '.url' 2>/dev/null) || {
+        log_error "Failed to get repository URL"
+        return 1
     }
 
-    BRANCH_NAME=$(echo "$PR_DATA" | gh pr view "$PR_NUMBER" --json headRefName --jq '.headRefName')
+    log_info "Repository URL: $REPO_URL"
+
+    # Create temp directory
+    TEMP_DIR=$(mktemp -d) || {
+        log_error "Failed to create temp directory"
+        return 1
+    }
+    log_info "Created temp directory: $TEMP_DIR"
+
+    # Clone the repo to temp directory
+    log_info "Cloning repository to temp directory..."
+    if ! git clone "$REPO_URL" "$TEMP_DIR/repo" 2>&1 | grep -v "^Cloning\|^Receiving\|^Resolving"; then
+        log_error "Failed to clone repository"
+        return 1
+    fi
+
+    # Change to temp repo directory
+    if ! cd "$TEMP_DIR/repo"; then
+        log_error "Failed to cd into cloned repo"
+        return 1
+    fi
+    log_success "Repository cloned and ready"
+
+    # Get PR details
+    log_info "Fetching PR details..."
+    BRANCH_NAME=$(gh pr view "$PR_NUMBER" --json headRefName --jq '.headRefName' 2>/dev/null) || {
+        log_error "Failed to fetch PR #${PR_NUMBER}"
+        return 1
+    }
     log_info "PR branch: $BRANCH_NAME"
 
     # Checkout the branch
     log_info "Checking out branch: $BRANCH_NAME"
-    git fetch origin "$BRANCH_NAME:$BRANCH_NAME" 2>/dev/null || git fetch origin
-    git checkout "$BRANCH_NAME" || {
+    if ! git fetch origin "$BRANCH_NAME"; then
+        log_error "Failed to fetch branch $BRANCH_NAME"
+        return 1
+    fi
+
+    if ! git checkout "$BRANCH_NAME"; then
         log_error "Failed to checkout branch $BRANCH_NAME"
-        exit 1
-    }
+        return 1
+    fi
+    log_success "Checked out branch: $BRANCH_NAME"
 
     # Create empty commit to trigger CI
     log_info "Creating empty commit to trigger CI..."
-    if git commit --allow-empty -m "Trigger CI"; then
+    if git commit --allow-empty -m "Trigger CI" 2>&1 | grep -v "^ruff"; then
         log_success "Empty commit created"
     else
         log_warning "Could not create empty commit (might already be up to date)"
@@ -85,10 +135,10 @@ main() {
 
     # Push the commit
     log_info "Pushing changes..."
-    git push origin "$BRANCH_NAME" || {
+    if ! git push origin "$BRANCH_NAME"; then
         log_error "Failed to push changes"
-        exit 1
-    }
+        return 1
+    fi
     log_success "Changes pushed"
 
     # Wait for CI to complete
@@ -102,20 +152,19 @@ main() {
 
         if [[ $ELAPSED -gt $TIMEOUT ]]; then
             log_error "CI checks timed out after ${TIMEOUT}s"
-            exit 1
+            return 1
         fi
 
         # Get current status
-        STATUS_DATA=$(gh pr view "$PR_NUMBER" --json statusCheckRollup 2>/dev/null) || {
+        CHECK_STATUS=$(gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].status' 2>/dev/null)
+        CHECK_CONCLUSION=$(gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].conclusion' 2>/dev/null)
+        CHECK_NAME=$(gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].name' 2>/dev/null)
+
+        if [[ -z "$CHECK_STATUS" ]]; then
             log_warning "Could not fetch PR status, retrying..."
             sleep $POLL_INTERVAL
             continue
-        }
-
-        # Extract status and conclusion
-        CHECK_STATUS=$(echo "$STATUS_DATA" | gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].status' 2>/dev/null)
-        CHECK_CONCLUSION=$(echo "$STATUS_DATA" | gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].conclusion' 2>/dev/null)
-        CHECK_NAME=$(echo "$STATUS_DATA" | gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].name' 2>/dev/null)
+        fi
 
         # Display progress
         printf "\r⏳ ${CHECK_NAME}: ${CHECK_STATUS} | Elapsed: ${ELAPSED}s / ${TIMEOUT}s"
@@ -129,7 +178,7 @@ main() {
                 break
             else
                 log_error "CI checks failed with conclusion: $CHECK_CONCLUSION"
-                exit 1
+                return 1
             fi
         fi
 
@@ -138,27 +187,27 @@ main() {
 
     # Approve the PR
     log_info "Approving PR..."
-    gh pr review "$PR_NUMBER" --approve || {
+    if ! gh pr review "$PR_NUMBER" --approve; then
         log_error "Failed to approve PR"
-        exit 1
-    }
+        return 1
+    fi
     log_success "PR approved"
 
     # Merge the PR
     log_info "Merging PR..."
-    gh pr merge "$PR_NUMBER" --merge || {
+    if ! gh pr merge "$PR_NUMBER" --merge; then
         log_error "Failed to merge PR"
-        exit 1
-    }
+        return 1
+    fi
     log_success "PR merged successfully!"
 
-    # Return to main branch
-    log_info "Switching back to main branch..."
-    git checkout main
-    git pull origin main
-
     log_success "All done! PR #${PR_NUMBER} has been processed and merged"
+    return 0
 }
 
 # Run main function
-main
+if main; then
+    exit 0
+else
+    exit 1
+fi

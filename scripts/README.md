@@ -1,11 +1,17 @@
 # Dependabot PR Merge Scripts
 
 Automated scripts to merge dependabot PRs after triggering CI checks. These scripts handle the workflow of:
-1. Checking out the PR branch
-2. Creating an empty commit to trigger CI
-3. Waiting for CI to pass
-4. Approving the PR
-5. Merging the PR
+1. Cloning the repo to a temporary directory (to avoid branch checkout issues when you're on a feature branch)
+2. Checking out the PR branch in the temp repo
+3. Creating an empty commit to trigger CI
+4. Waiting for CI to pass
+5. Approving the PR
+6. Merging the PR
+7. Cleaning up the temporary directory
+
+## Key Feature
+
+**These scripts work seamlessly whether you're on a feature branch or main branch!** They use a temporary clone of the repository, so checking out dependabot branches won't affect your current working directory.
 
 ## Prerequisites
 
@@ -82,22 +88,20 @@ Displays:
 ### The Single PR Script Flow
 
 1. **Validate Input**: Checks PR number exists and required tools are installed
-2. **Fetch PR Details**: Gets the branch name and current status
-3. **Checkout Branch**: Switches to the PR branch
-4. **Trigger CI**: Creates an empty commit with `--allow-empty` flag
-5. **Push Changes**: Pushes the commit to trigger GitHub Actions
-6. **Wait for CI**: Polls the PR status every 30 seconds until:
+2. **Setup Cleanup**: Ensures temp directory is deleted even if errors occur
+3. **Get Repository Info**: Fetches the remote URL using GitHub CLI
+4. **Create Temp Clone**: Creates a temporary directory and clones the full repository
+5. **Fetch PR Details**: Gets the branch name for the PR
+6. **Checkout Branch**: Checks out the PR branch in the temp repo
+7. **Trigger CI**: Creates an empty commit with `--allow-empty` flag
+8. **Push Changes**: Pushes the commit to trigger GitHub Actions (from your authenticated user, not dependabot)
+9. **Wait for CI**: Polls the PR status every 30 seconds until:
    - ✅ CI completes with SUCCESS
    - ⏱️ Timeout is reached
    - ❌ CI fails
-7. **Approve**: Approves the PR if CI passed
-8. **Merge**: Merges the PR with `--merge` strategy
-9. **Cleanup**: Switches back to main and pulls latest changes
-
-### The Batch Script Flow
-
-1. **Query GitHub**: Finds all open PRs by dependabot user
-2. **Display List**: Shows PR numbers and titles
+10. **Approve**: Approves the PR if CI passed
+11. **Merge**: Merges the PR with `--merge` strategy
+12. **Cleanup**: Automatically removes the temp directory (via trap, even on error)
 3. **Process Each**: Calls the single PR script for each found PR
 4. **Report Summary**: Shows total, successful, and failed PRs
 
@@ -138,6 +142,22 @@ Check:
 ### "Cannot delete remote tracking branch"
 This is usually not a fatal error. The PR is still merged successfully.
 
+## Running from Any Branch
+
+Unlike the initial workflow you performed manually, **these scripts can be run from any branch** (feature branches, develop, main, etc.) without affecting your current working directory:
+
+```bash
+# You're on your feature branch - no problem!
+git checkout my-feature-branch
+
+# Run the script from your feature branch directory
+./scripts/merge_dependabot_pr.sh 89
+
+# Your feature branch is untouched
+# The temp repo handles all the merging
+git status  # Still on my-feature-branch with all your work intact
+```
+
 ## Running from Windows
 
 If using Git Bash on Windows:
@@ -174,7 +194,10 @@ jobs:
 
 ## Notes
 
-- The scripts are safe to run repeatedly - they won't duplicate commits if already present
-- CI failures will prevent merging and require manual review
-- The `--allow-empty` commit is used to trigger fresh CI runs with your GitHub user context instead of dependabot's limited context
-- After merging, the scripts switch back to the main branch
+- **Safe to run from any branch**: The scripts use a temporary clone, so your current working directory is never affected
+- **Safe to run repeatedly**: They won't duplicate commits if already present
+- **Automatic cleanup**: Even if the script fails, the temp directory is automatically cleaned up via signal trap
+- **CI failures prevent merging**: If checks fail, the script stops and requires manual review
+- **The `--allow-empty` commit**: Triggers fresh CI runs with your authenticated GitHub user context instead of dependabot's limited context (which lacks access to secrets)
+- **After merging**: The temp repo is discarded; your current branch remains unchanged
+- **Works on feature branches**: You can safely run these scripts while working on any branch
