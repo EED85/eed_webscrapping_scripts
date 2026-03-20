@@ -132,8 +132,12 @@ main() {
     SELECTED_PRS=()
     if [[ "$DEV_MODE" == "true" ]]; then
         log_info "Dev mode: Select a PR to test the script"
-        echo "Enter the number of the PR to process (or 'all' to process all):"
-        read -r -p "Selection: " selection
+        echo ""
+        echo "Choose one of the options above:"
+        echo "  - Enter the MENU NUMBER from [brackets] above (e.g., '1' for PR #85)"
+        echo "  - Or type 'all' to process all PRs"
+        echo ""
+        read -r -p "Your choice: " selection
 
         if [[ "$selection" == "all" ]]; then
             SELECTED_PRS=("${PR_ARRAY[@]}")

@@ -118,12 +118,19 @@ Dev mode is perfect for testing before full automation:
 ./scripts/merge_all_dependabot_prs.sh --dev
 
 # 2. Script lists available PRs:
-# [1] PR #89: Bump ruff from 0.9.7 to 0.14.14
-# [2] PR #90: Bump requests from 2.28.0 to 2.32.4
+# Found 3 open dependabot PR(s):
 #
-# Enter the number of the PR to process (or 'all' to process all):
+#   [1] PR #85  : Bump gitpython from 3.1.44 to 3.1.46
+#   [2] PR #84  : Bump beautifulsoup4 from 4.13.3 to 4.14.3
+#   [3] PR #83  : Bump requests from 2.32.4 to 2.32.5
+#
+# Choose one of the options above:
+#   - Enter the MENU NUMBER from [brackets] above (e.g., '1' for PR #85)
+#   - Or type 'all' to process all PRs
+#
+# Your choice:
 
-# 3. Enter selection (e.g., "1" to test just PR #89)
+# 3. **Enter just the menu number** (e.g., type "1" to select PR #85)
 1
 
 # 4. Watch the script work on that single PR
