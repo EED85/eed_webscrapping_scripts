@@ -56,17 +56,17 @@ log_error() {
 # Main workflow
 main() {
     log_info "Processing PR #${PR_NUMBER}"
-    
+
     # Get PR details
     log_info "Fetching PR details..."
     PR_DATA=$(gh pr view "$PR_NUMBER" --json headRefName,statusCheckRollup 2>/dev/null) || {
         log_error "Failed to fetch PR #${PR_NUMBER}"
         exit 1
     }
-    
+
     BRANCH_NAME=$(echo "$PR_DATA" | gh pr view "$PR_NUMBER" --json headRefName --jq '.headRefName')
     log_info "PR branch: $BRANCH_NAME"
-    
+
     # Checkout the branch
     log_info "Checking out branch: $BRANCH_NAME"
     git fetch origin "$BRANCH_NAME:$BRANCH_NAME" 2>/dev/null || git fetch origin
@@ -74,7 +74,7 @@ main() {
         log_error "Failed to checkout branch $BRANCH_NAME"
         exit 1
     }
-    
+
     # Create empty commit to trigger CI
     log_info "Creating empty commit to trigger CI..."
     if git commit --allow-empty -m "Trigger CI"; then
@@ -82,7 +82,7 @@ main() {
     else
         log_warning "Could not create empty commit (might already be up to date)"
     fi
-    
+
     # Push the commit
     log_info "Pushing changes..."
     git push origin "$BRANCH_NAME" || {
@@ -90,40 +90,40 @@ main() {
         exit 1
     }
     log_success "Changes pushed"
-    
+
     # Wait for CI to complete
     log_info "Waiting for CI checks to complete (timeout: ${TIMEOUT}s)..."
     START_TIME=$(date +%s)
-    
+
     while true; do
         # Check elapsed time
         CURRENT_TIME=$(date +%s)
         ELAPSED=$((CURRENT_TIME - START_TIME))
-        
+
         if [[ $ELAPSED -gt $TIMEOUT ]]; then
             log_error "CI checks timed out after ${TIMEOUT}s"
             exit 1
         fi
-        
+
         # Get current status
         STATUS_DATA=$(gh pr view "$PR_NUMBER" --json statusCheckRollup 2>/dev/null) || {
             log_warning "Could not fetch PR status, retrying..."
             sleep $POLL_INTERVAL
             continue
         }
-        
+
         # Extract status and conclusion
         CHECK_STATUS=$(echo "$STATUS_DATA" | gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].status' 2>/dev/null)
         CHECK_CONCLUSION=$(echo "$STATUS_DATA" | gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].conclusion' 2>/dev/null)
         CHECK_NAME=$(echo "$STATUS_DATA" | gh pr view "$PR_NUMBER" --json statusCheckRollup --jq '.statusCheckRollup[0].name' 2>/dev/null)
-        
+
         # Display progress
         printf "\r⏳ ${CHECK_NAME}: ${CHECK_STATUS} | Elapsed: ${ELAPSED}s / ${TIMEOUT}s"
-        
+
         # Check if completed
         if [[ "$CHECK_STATUS" == "COMPLETED" ]]; then
             printf "\n"
-            
+
             if [[ "$CHECK_CONCLUSION" == "SUCCESS" ]]; then
                 log_success "CI checks passed!"
                 break
@@ -132,10 +132,10 @@ main() {
                 exit 1
             fi
         fi
-        
+
         sleep $POLL_INTERVAL
     done
-    
+
     # Approve the PR
     log_info "Approving PR..."
     gh pr review "$PR_NUMBER" --approve || {
@@ -143,7 +143,7 @@ main() {
         exit 1
     }
     log_success "PR approved"
-    
+
     # Merge the PR
     log_info "Merging PR..."
     gh pr merge "$PR_NUMBER" --merge || {
@@ -151,12 +151,12 @@ main() {
         exit 1
     }
     log_success "PR merged successfully!"
-    
+
     # Return to main branch
     log_info "Switching back to main branch..."
     git checkout main
     git pull origin main
-    
+
     log_success "All done! PR #${PR_NUMBER} has been processed and merged"
 }
 

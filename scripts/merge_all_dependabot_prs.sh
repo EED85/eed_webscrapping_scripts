@@ -54,52 +54,52 @@ fi
 # Main workflow
 main() {
     log_info "Fetching open dependabot PRs..."
-    
+
     # Get all open dependabot PRs
     PR_NUMBERS=$(gh pr list --author=dependabot --state=open --json number --jq '.[].number' 2>/dev/null)
-    
+
     if [[ -z "$PR_NUMBERS" ]]; then
         log_success "No open dependabot PRs found"
         exit 0
     fi
-    
+
     # Convert to array
     mapfile -t PR_ARRAY <<<"$PR_NUMBERS"
     TOTAL_PRS=${#PR_ARRAY[@]}
-    
+
     log_info "Found $TOTAL_PRS open dependabot PR(s):"
-    
+
     # Display PR info
     for PR_NUM in "${PR_ARRAY[@]}"; do
         TITLE=$(gh pr view "$PR_NUM" --json title --jq '.title' 2>/dev/null)
         echo "  - PR #$PR_NUM: $TITLE"
     done
-    
+
     echo ""
-    
+
     # Process each PR
     PROCESSED=0
     FAILED=0
-    
+
     for PR_NUM in "${PR_ARRAY[@]}"; do
         ((PROCESSED++))
         log_info "Processing PR #$PR_NUM ($PROCESSED/$TOTAL_PRS)..."
-        
+
         if "$MERGE_SCRIPT" "$PR_NUM" "$TIMEOUT"; then
             log_success "PR #$PR_NUM processed successfully"
         else
             log_error "Failed to process PR #$PR_NUM"
             ((FAILED++))
         fi
-        
+
         echo ""
     done
-    
+
     # Summary
     log_info "========== SUMMARY =========="
     log_info "Total PRs: $TOTAL_PRS"
     log_success "Successfully processed: $((TOTAL_PRS - FAILED))"
-    
+
     if [[ $FAILED -gt 0 ]]; then
         log_error "Failed: $FAILED"
         exit 1

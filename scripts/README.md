@@ -87,7 +87,7 @@ Displays:
 4. **Trigger CI**: Creates an empty commit with `--allow-empty` flag
 5. **Push Changes**: Pushes the commit to trigger GitHub Actions
 6. **Wait for CI**: Polls the PR status every 30 seconds until:
-   - ✅ CI completes with SUCCESS 
+   - ✅ CI completes with SUCCESS
    - ⏱️ Timeout is reached
    - ❌ CI fails
 7. **Approve**: Approves the PR if CI passed
