@@ -46,12 +46,37 @@ bash scripts/merge_dependabot_pr.sh 89
 - `PR_NUMBER` (required): The number of the PR to process
 - `timeout_seconds` (optional): Maximum time to wait for CI (default: 600 seconds = 10 minutes)
 
+**Key Features:**
+
+The script automatically optimizes how it triggers CI by:
+
+1. **Smart Rebasing** (Preferred): First attempts to rebase the PR branch on the main branch
+   - If successful without conflicts: pushes the rebased branch and skips to CI checks
+   - Updates the PR with latest changes from main
+   - Better for CI - may resolve issues that disappear with latest code
+
+2. **Empty Commit Fallback**: If rebase fails (conflicts detected)
+   - Aborts the rebase and falls back to creating an empty commit
+   - Still triggers CI but maintains current branch content
+   - Safe approach when conflicts would require manual resolution
+
 **Output:**
 The script provides colored output with status updates:
 - 🔵 `[INFO]` - Informational messages
 - 🟢 `[SUCCESS]` - Successful operations
 - 🟡 `[WARNING]` - Warnings
 - 🔴 `[ERROR]` - Errors
+
+Example output showing successful rebase:
+```
+[INFO] Processing PR #88
+[INFO] Attempting to rebase on main branch...
+[INFO] Using main branch: origin/main
+[SUCCESS] Rebase successful! Branch is now up-to-date with main
+[INFO] Pushing rebased changes...
+[SUCCESS] Rebased branch pushed successfully
+[INFO] Waiting for CI checks to complete...
+```
 
 ### 2. `merge_all_dependabot_prs.sh` - Merge All Open PRs (or Test One in Dev Mode)
 
@@ -122,17 +147,28 @@ Displays:
 4. **Create Temp Clone**: Creates a temporary directory and clones the full repository
 5. **Fetch PR Details**: Gets the branch name for the PR
 6. **Checkout Branch**: Checks out the PR branch in the temp repo
-7. **Trigger CI**: Creates an empty commit with `--allow-empty` flag
-8. **Push Changes**: Pushes the commit to trigger GitHub Actions (from your authenticated user, not dependabot)
-9. **Wait for CI**: Polls the PR status every 30 seconds until:
+7. **Smart CI Trigger** (Two approaches - tries rebase first):
+   - **Attempt Rebase** (Preferred): Tries to rebase the PR branch on main/master
+     - ✅ If successful: Pushes the rebased, up-to-date branch
+     - ❌ If conflicts detected: Aborts rebase and falls back to empty commit
+   - **Empty Commit** (Fallback): Creates an empty commit to trigger CI
+     - Used when rebase would create conflicts
+     - Still effectively triggers fresh CI run from your user account
+8. **Wait for CI**: Polls the PR status every 30 seconds until:
    - ✅ CI completes with SUCCESS
    - ⏱️ Timeout is reached
    - ❌ CI fails
-10. **Approve**: Approves the PR if CI passed
-11. **Merge**: Merges the PR with `--merge` strategy
-12. **Cleanup**: Automatically removes the temp directory (via trap, even on error)
-3. **Process Each**: Calls the single PR script for each found PR
-4. **Report Summary**: Shows total, successful, and failed PRs
+9. **Approve**: Approves the PR if CI passed
+10. **Merge**: Merges the PR with `--merge` strategy
+11. **Cleanup**: Automatically removes the temp directory (via trap, even on error)
+
+### The Batch PR Script Flow
+
+1. **Query GitHub**: Finds all open PRs by dependabot user
+2. **Display List**: Shows PR numbers and titles
+3. **Dev Mode (Optional)**: If `--dev` flag is used, prompts user to select one PR
+4. **Process Each**: Calls the single PR script for each found (or selected) PR
+5. **Report Summary**: Shows total, successful, and failed PRs
 
 ## Error Handling
 
@@ -223,10 +259,14 @@ jobs:
 
 ## Notes
 
+- **Smart Rebase First**: The script attempts to rebase PR branches on main/master before using empty commits
+  - Keeps PRs up-to-date with latest code (better for CI)
+  - Safely falls back to empty commit if conflicts are detected
+  - No manual intervention needed either way
 - **Safe to run from any branch**: The scripts use a temporary clone, so your current working directory is never affected
 - **Safe to run repeatedly**: They won't duplicate commits if already present
 - **Automatic cleanup**: Even if the script fails, the temp directory is automatically cleaned up via signal trap
 - **CI failures prevent merging**: If checks fail, the script stops and requires manual review
-- **The `--allow-empty` commit**: Triggers fresh CI runs with your authenticated GitHub user context instead of dependabot's limited context (which lacks access to secrets)
+- **Empty Commit Fallback**: When rebase has conflicts, creates a fresh CI trigger with your authenticated GitHub user context (instead of dependabot's limited context which lacks access to secrets)
 - **After merging**: The temp repo is discarded; your current branch remains unchanged
 - **Works on feature branches**: You can safely run these scripts while working on any branch

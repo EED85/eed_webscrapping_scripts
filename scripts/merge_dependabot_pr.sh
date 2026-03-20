@@ -19,6 +19,7 @@ PR_NUMBER="${1:-}"
 TIMEOUT="${2:-600}"  # Default 10 minutes
 POLL_INTERVAL=30      # Check status every 30 seconds
 TEMP_DIR=""           # Will be set later
+REBASE_FAILED=0       # Track if rebase attempt failed
 
 # Validation
 if [[ -z "$PR_NUMBER" ]]; then
@@ -160,21 +161,67 @@ main() {
     fi
     log_success "Checked out branch: $BRANCH_NAME"
 
-    # Create empty commit to trigger CI
-    log_info "Creating empty commit to trigger CI..."
-    if git commit --allow-empty -m "Trigger CI" 2>&1 | grep -v "^ruff"; then
-        log_success "Empty commit created"
-    else
-        log_warning "Could not create empty commit (might already be up to date)"
+    # Attempt to rebase on main/master branch
+    log_info "Attempting to rebase on main branch..."
+
+    # Detect main branch name (could be 'main' or 'master')
+    local main_branch="main"
+    if ! git rev-parse --verify "origin/main" &>/dev/null; then
+        if git rev-parse --verify "origin/master" &>/dev/null; then
+            main_branch="master"
+        fi
     fi
 
-    # Push the commit
-    log_info "Pushing changes..."
-    if ! git push origin "$BRANCH_NAME"; then
-        log_error "Failed to push changes"
-        return 1
+    log_info "Using main branch: origin/$main_branch"
+
+    # Try to rebase - capture exit code
+    local rebase_exit_code
+    git rebase "origin/$main_branch" > /dev/null 2>&1
+    rebase_exit_code=$?
+
+    if [[ $rebase_exit_code -eq 0 ]]; then
+        # Rebase succeeded - verify we're not in a rebase state
+        if [[ ! -d ".git/rebase-merge" ]] && [[ ! -d ".git/rebase-apply" ]]; then
+            log_success "Rebase successful! Branch is now up-to-date with $main_branch"
+            log_info "Pushing rebased changes..."
+
+            # Push the rebased branch (use force-with-lease to be safer)
+            if git push origin "$BRANCH_NAME" --force-with-lease > /dev/null 2>&1; then
+                log_success "Rebased branch pushed successfully"
+                REBASE_FAILED=0
+            else
+                log_warning "Failed to push rebased branch, falling back to empty commit"
+                REBASE_FAILED=1
+            fi
+        else
+            log_warning "Rebase in inconsistent state"
+            git rebase --abort 2>/dev/null || true
+            REBASE_FAILED=1
+        fi
+    else
+        # Rebase failed (likely conflicts)
+        log_warning "Rebase failed (likely due to conflicts)"
+        git rebase --abort 2>/dev/null || true
+        REBASE_FAILED=1
     fi
-    log_success "Changes pushed"
+
+    # If rebase didn't work, use empty commit to trigger CI
+    if [[ $REBASE_FAILED -eq 1 ]]; then
+        log_info "Using empty commit approach to trigger CI..."
+        if git commit --allow-empty -m "Trigger CI" 2>&1 | grep -v "^ruff"; then
+            log_success "Empty commit created"
+        else
+            log_warning "Could not create empty commit (might already be up to date)"
+        fi
+
+        # Push the commit
+        log_info "Pushing changes..."
+        if ! git push origin "$BRANCH_NAME"; then
+            log_error "Failed to push changes"
+            return 1
+        fi
+        log_success "Changes pushed"
+    fi
 
     # Wait for CI to complete
     log_info "Waiting for CI checks to complete (timeout: ${TIMEOUT}s)..."
