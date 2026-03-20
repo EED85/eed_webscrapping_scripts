@@ -62,6 +62,33 @@ cleanup() {
     fi
 }
 
+# Determine temp directory (cross-platform: Windows, macOS, Linux)
+get_temp_dir() {
+    if [[ -n "$TEMP" ]]; then
+        echo "$TEMP"
+    elif [[ -n "$TMP" ]]; then
+        echo "$TMP"
+    elif [[ -n "$TMPDIR" ]]; then
+        echo "$TMPDIR"
+    else
+        echo "/tmp"
+    fi
+}
+
+# Create temp directory with random suffix
+create_temp_dir() {
+    local base_temp=$(get_temp_dir)
+    local random_suffix=$(openssl rand -hex 8 2>/dev/null || echo "$$")
+    local temp_path="${base_temp}/eed_dependabot_$$_${random_suffix}"
+    
+    if mkdir -p "$temp_path" 2>/dev/null; then
+        echo "$temp_path"
+    else
+        log_error "Failed to create temp directory at: $temp_path"
+        return 1
+    fi
+}
+
 # Setup cleanup trap
 trap cleanup EXIT
 
@@ -83,26 +110,34 @@ main() {
 
     log_info "Repository URL: $REPO_URL"
 
-    # Create temp directory
-    TEMP_DIR=$(mktemp -d) || {
+    # Create temp directory (cross-platform)
+    TEMP_DIR=$(create_temp_dir) || {
         log_error "Failed to create temp directory"
         return 1
     }
     log_info "Created temp directory: $TEMP_DIR"
 
     # Clone the repo to temp directory
-    log_info "Cloning repository to temp directory..."
-    if ! git clone "$REPO_URL" "$TEMP_DIR/repo" 2>&1 | grep -v "^Cloning\|^Receiving\|^Resolving"; then
+    log_info "Cloning repository to temp directory (this may take a moment)..."
+    local clone_output
+    clone_output=$(git clone "$REPO_URL" "$TEMP_DIR/repo" 2>&1)
+    local clone_status=$?
+    
+    if [[ $clone_status -ne 0 ]]; then
         log_error "Failed to clone repository"
+        log_error "Exit code: $clone_status"
+        log_error "Output: $clone_output"
         return 1
     fi
+
+    log_success "Repository cloned successfully"
 
     # Change to temp repo directory
     if ! cd "$TEMP_DIR/repo"; then
         log_error "Failed to cd into cloned repo"
         return 1
     fi
-    log_success "Repository cloned and ready"
+    log_success "Ready to process PR"
 
     # Get PR details
     log_info "Fetching PR details..."
@@ -176,6 +211,10 @@ main() {
             if [[ "$CHECK_CONCLUSION" == "SUCCESS" ]]; then
                 log_success "CI checks passed!"
                 break
+            elif [[ -z "$CHECK_CONCLUSION" ]]; then
+                log_warning "CI check completed but conclusion not yet available, waiting..."
+                sleep $POLL_INTERVAL
+                continue
             else
                 log_error "CI checks failed with conclusion: $CHECK_CONCLUSION"
                 return 1
