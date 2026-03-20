@@ -53,13 +53,13 @@ The script provides colored output with status updates:
 - 🟡 `[WARNING]` - Warnings
 - 🔴 `[ERROR]` - Errors
 
-### 2. `merge_all_dependabot_prs.sh` - Merge All Open PRs
+### 2. `merge_all_dependabot_prs.sh` - Merge All Open PRs (or Test One in Dev Mode)
 
-Finds all open dependabot PRs and processes them one by one.
+Finds all open dependabot PRs and processes them. Includes an optional **dev mode** to test the script on a single PR before processing all of them.
 
 **Usage:**
 ```bash
-./scripts/merge_all_dependabot_prs.sh [timeout_seconds]
+./scripts/merge_all_dependabot_prs.sh [--dev] [timeout_seconds]
 ```
 
 **Examples:**
@@ -70,12 +70,41 @@ Finds all open dependabot PRs and processes them one by one.
 # Process all open PRs with custom 15-minute timeout per PR
 ./scripts/merge_all_dependabot_prs.sh 900
 
+# Dev mode: list PRs and let you choose which one to test
+./scripts/merge_all_dependabot_prs.sh --dev
+
+# Dev mode with custom timeout
+./scripts/merge_all_dependabot_prs.sh --dev 900
+
 # From project root
-bash scripts/merge_all_dependabot_prs.sh
+bash scripts/merge_all_dependabot_prs.sh --dev
 ```
 
 **Parameters:**
+- `--dev` (optional): Enable dev mode - lists all PRs and prompts you to select one to process. Useful for testing the script before running in batch mode.
 - `timeout_seconds` (optional): Maximum time to wait for CI per PR (default: 600 seconds = 10 minutes)
+
+### Dev Mode Workflow
+
+Dev mode is perfect for testing before full automation:
+
+```bash
+# 1. Run in dev mode
+./scripts/merge_all_dependabot_prs.sh --dev
+
+# 2. Script lists available PRs:
+# [1] PR #89: Bump ruff from 0.9.7 to 0.14.14
+# [2] PR #90: Bump requests from 2.28.0 to 2.32.4
+#
+# Enter the number of the PR to process (or 'all' to process all):
+
+# 3. Enter selection (e.g., "1" to test just PR #89)
+1
+
+# 4. Watch the script work on that single PR
+# 5. Once confirmed it's working, run the full batch:
+./scripts/merge_all_dependabot_prs.sh
+```
 
 **Output:**
 Displays:
