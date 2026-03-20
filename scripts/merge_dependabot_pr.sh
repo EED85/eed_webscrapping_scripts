@@ -80,7 +80,7 @@ create_temp_dir() {
     local base_temp=$(get_temp_dir)
     local random_suffix=$(openssl rand -hex 8 2>/dev/null || echo "$$")
     local temp_path="${base_temp}/eed_dependabot_$$_${random_suffix}"
-    
+
     if mkdir -p "$temp_path" 2>/dev/null; then
         echo "$temp_path"
     else
@@ -122,7 +122,7 @@ main() {
     local clone_output
     clone_output=$(git clone "$REPO_URL" "$TEMP_DIR/repo" 2>&1)
     local clone_status=$?
-    
+
     if [[ $clone_status -ne 0 ]]; then
         log_error "Failed to clone repository"
         log_error "Exit code: $clone_status"
