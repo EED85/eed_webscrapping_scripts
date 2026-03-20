@@ -78,11 +78,34 @@ main() {
     log_info "Running in $mode mode (timeout: ${TIMEOUT}s)"
     log_info "Fetching open dependabot PRs..."
 
-    # Get all open dependabot PRs
+    # Get all open dependabot PRs (try multiple author formats)
+    # Dependabot can appear as "dependabot" or "dependabot[bot]"
     PR_NUMBERS=$(gh pr list --author=dependabot --state=open --json number --jq '.[].number' 2>/dev/null)
+
+    # If no results, try with [bot] suffix
+    if [[ -z "$PR_NUMBERS" ]]; then
+        log_info "Trying alternative author format 'dependabot[bot]'..."
+        PR_NUMBERS=$(gh pr list --author='dependabot[bot]' --state=open --json number --jq '.[].number' 2>/dev/null)
+    fi
+
+    # If still no results, try searching by label
+    if [[ -z "$PR_NUMBERS" ]]; then
+        log_info "Trying to search by 'dependencies' label..."
+        PR_NUMBERS=$(gh pr list --label=dependencies --state=open --json number,author --jq '.[] | select(.author.login | contains("dependabot")) | .number' 2>/dev/null)
+    fi
 
     if [[ -z "$PR_NUMBERS" ]]; then
         log_success "No open dependabot PRs found"
+        log_info "Searching for all open PRs to verify..."
+        local all_prs=$(gh pr list --state=open --json number,author,title --jq '.[] | select(.title | contains("Bump") or .title | contains("Dependabot")) | .number' 2>/dev/null)
+        if [[ -n "$all_prs" ]]; then
+            log_info "Found potential PRs (may contain 'Bump' or 'Dependabot'):"
+            echo "$all_prs" | while read -r pr; do
+                local title=$(gh pr view "$pr" --json title --jq '.title' 2>/dev/null)
+                local author=$(gh pr view "$pr" --json author --jq '.author.login' 2>/dev/null)
+                echo "  - PR #$pr by $author: $title"
+            done
+        fi
         return 0
     fi
 
