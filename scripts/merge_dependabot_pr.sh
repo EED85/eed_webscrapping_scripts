@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 # Configuration
 PR_NUMBER="${1:-}"
 TIMEOUT="${2:-600}"  # Default 10 minutes
-POLL_INTERVAL=30      # Check status every 30 seconds
+POLL_INTERVAL=10      # Check status every 10 seconds
 TEMP_DIR=""           # Will be set later
 REBASE_FAILED=0       # Track if rebase attempt failed
 
@@ -205,23 +205,28 @@ main() {
         REBASE_FAILED=1
     fi
 
-    # If rebase didn't work, use empty commit to trigger CI
-    if [[ $REBASE_FAILED -eq 1 ]]; then
-        log_info "Using empty commit approach to trigger CI..."
-        if git commit --allow-empty -m "Trigger CI" 2>&1 | grep -v "^ruff"; then
-            log_success "Empty commit created"
-        else
-            log_warning "Could not create empty commit (might already be up to date)"
-        fi
+    # Always create and push an empty commit to trigger CI from user's authenticated context
+    # This is CRITICAL for dependabot PRs because:
+    # - Dependabot PRs don't have access to repository secrets (security feature)
+    # - Adding an empty commit re-triggers CI from the user's authenticated context
+    # - User's context DOES have access to secrets, so tests can pass
+    log_info "Creating empty commit to trigger CI from user's authenticated context..."
+    if git commit --allow-empty -m "Trigger CI" 2>&1 | grep -v "^ruff"; then
+        log_success "Empty commit created"
+    else
+        log_warning "Could not create empty commit (might already be up to date)"
+    fi
 
-        # Push the commit
-        log_info "Pushing changes..."
-        if ! git push origin "$BRANCH_NAME"; then
+    # Push the commit
+    log_info "Pushing changes..."
+    if ! git push origin "$BRANCH_NAME" > /dev/null 2>&1; then
+        # If force push fails after rebase, try regular push
+        if ! git push origin "$BRANCH_NAME" --force-with-lease > /dev/null 2>&1; then
             log_error "Failed to push changes"
             return 1
         fi
-        log_success "Changes pushed"
     fi
+    log_success "Changes pushed successfully"
 
     # Wait for CI to complete
     log_info "Waiting for CI checks to complete (timeout: ${TIMEOUT}s)..."

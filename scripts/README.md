@@ -48,17 +48,18 @@ bash scripts/merge_dependabot_pr.sh 89
 
 **Key Features:**
 
-The script automatically optimizes how it triggers CI by:
+The script automatically optimizes how it triggers CI:
 
-1. **Smart Rebasing** (Preferred): First attempts to rebase the PR branch on the main branch
-   - If successful without conflicts: pushes the rebased branch and skips to CI checks
-   - Updates the PR with latest changes from main
-   - Better for CI - may resolve issues that disappear with latest code
+1. **Smart Rebasing** (First step - if possible): Attempts to rebase the PR branch on the main branch
+   - Keeps the PR up-to-date with latest main code
+   - Better for CI - ensures PR code is compatible with latest changes
+   - If conflicts detected: skips rebase and moves to next step
 
-2. **Empty Commit Fallback**: If rebase fails (conflicts detected)
-   - Aborts the rebase and falls back to creating an empty commit
-   - Still triggers CI but maintains current branch content
-   - Safe approach when conflicts would require manual resolution
+2. **Empty Commit from Your User Context** (Critical step - always done): Creates and pushes an empty commit
+   - **Why this is critical**: Dependabot PRs fail tests because they don't have access to repository secrets (GitHub security feature)
+   - Empty commit triggers a fresh CI run from YOUR authenticated user context
+   - Your context DOES have access to secrets, so tests can pass
+   - This is the core mechanism that makes these scripts work
 
 **Output:**
 The script provides colored output with status updates:
@@ -154,13 +155,15 @@ Displays:
 4. **Create Temp Clone**: Creates a temporary directory and clones the full repository
 5. **Fetch PR Details**: Gets the branch name for the PR
 6. **Checkout Branch**: Checks out the PR branch in the temp repo
-7. **Smart CI Trigger** (Two approaches - tries rebase first):
-   - **Attempt Rebase** (Preferred): Tries to rebase the PR branch on main/master
-     - ✅ If successful: Pushes the rebased, up-to-date branch
-     - ❌ If conflicts detected: Aborts rebase and falls back to empty commit
-   - **Empty Commit** (Fallback): Creates an empty commit to trigger CI
-     - Used when rebase would create conflicts
-     - Still effectively triggers fresh CI run from your user account
+7. **Trigger CI from Your Authenticated Context** (Critical step):
+   - **Attempt Rebase** (First): Tries to rebase the PR branch on main/master to keep it up-to-date
+     - ✅ If successful: Updates the branch with latest code
+     - ❌ If conflicts detected: Aborts rebase (but continues to next step)
+   - **Create Empty Commit** (Always done): Creates an empty commit authored by you
+     - This is CRITICAL: Dependabot PRs don't have access to repository secrets (GitHub security feature)
+     - Empty commit triggers CI to run from YOUR authenticated context
+     - Your context does have access to secrets, so tests can pass
+     - Both success and conflict scenarios end with an empty commit push
 8. **Wait for CI**: Polls the PR status every 30 seconds until:
    - ✅ CI completes with SUCCESS
    - ⏱️ Timeout is reached
@@ -266,14 +269,18 @@ jobs:
 
 ## Notes
 
-- **Smart Rebase First**: The script attempts to rebase PR branches on main/master before using empty commits
-  - Keeps PRs up-to-date with latest code (better for CI)
-  - Safely falls back to empty commit if conflicts are detected
-  - No manual intervention needed either way
+- **Empty Commit is Critical**: The script ALWAYS creates an empty commit (even after successful rebase) because:
+  - Dependabot PRs don't have access to repository secrets (GitHub security feature)
+  - Empty commit triggers CI to run from YOUR authenticated user context
+  - Your context DOES have access to secrets, so tests pass
+  - This is why the script works for dependabot PRs with failing tests
+- **Smart Rebase First**: The script attempts to rebase PR branches on main/master to keep them up-to-date
+  - Ensures PR code is compatible with latest changes
+  - If conflicts detected: skips rebase but still creates empty commit
+  - Always results in a final empty commit push
 - **Safe to run from any branch**: The scripts use a temporary clone, so your current working directory is never affected
 - **Safe to run repeatedly**: They won't duplicate commits if already present
 - **Automatic cleanup**: Even if the script fails, the temp directory is automatically cleaned up via signal trap
-- **CI failures prevent merging**: If checks fail, the script stops and requires manual review
-- **Empty Commit Fallback**: When rebase has conflicts, creates a fresh CI trigger with your authenticated GitHub user context (instead of dependabot's limited context which lacks access to secrets)
+- **CI failures prevent merging**: If checks still fail, the script stops (don't merge broken code!)
 - **After merging**: The temp repo is discarded; your current branch remains unchanged
 - **Works on feature branches**: You can safely run these scripts while working on any branch
