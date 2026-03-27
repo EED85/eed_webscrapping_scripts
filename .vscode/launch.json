@@ -5,13 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Current File",
+         "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            // "python": "${workspaceFolder}/.venv/Scripts/python.exe",
-            "justMyCode": true
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "showReturnValue": false,
+            "redirectOutput": true
         }
     ]
 }
