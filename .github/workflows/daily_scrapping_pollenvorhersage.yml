@@ -1,5 +1,8 @@
 name: daily scrapping pollenvorhersage
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
 

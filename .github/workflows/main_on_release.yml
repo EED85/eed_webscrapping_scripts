@@ -1,5 +1,8 @@
 name: Create views on release
 
+permissions:
+  contents: read
+
 on:
   push:
     tags:
