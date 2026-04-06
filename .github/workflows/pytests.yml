@@ -1,4 +1,4 @@
-name: ruff
+name: pytests
 
 permissions:
   contents: read
@@ -11,5 +11,7 @@ jobs:
  run:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout latest release
+      - name: run pytests
         uses: EED-Solutions/eed_gha_workflows/.github/actions/pytests@Update-versions-of-actions
+        with:
+          encryption_password: ${{ secrets.ENCRYPTION_PASWORD }}
