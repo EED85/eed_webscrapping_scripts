@@ -12,4 +12,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest release
-        uses: EED-Solutions/eed_gha_workflows/.github/actions/ruff@Update-versions-of-actions
+        uses: EED-Solutions/eed_gha_workflows/.github/actions/ruff@main

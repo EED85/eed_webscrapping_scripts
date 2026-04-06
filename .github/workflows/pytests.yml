@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: run pytests
-        uses: EED-Solutions/eed_gha_workflows/.github/actions/pytests@Update-versions-of-actions
+        uses: EED-Solutions/eed_gha_workflows/.github/actions/pytests@main
         with:
           encryption_password: ${{ secrets.ENCRYPTION_PASWORD }}
           encryption_result: ${{ secrets.ENCRYPTION_RESULT }}
