@@ -16,3 +16,4 @@ jobs:
         with:
           encryption_password: ${{ secrets.ENCRYPTION_PASWORD }}
           encryption_result: ${{ secrets.ENCRYPTION_RESULT }}
+          encryption_salt: ${{ secrets.ENCRYPTION_SALT }}
