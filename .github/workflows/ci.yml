@@ -8,5 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  ruff:
-    uses: EED-Solutions/eed_gha_workflows/.github/workflows/callable_ruff.yml@Update-versions-of-actions
+ run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest release
+        uses: EED-Solutions/eed_gha_workflows/.github/actions/ruff@Update-versions-of-actions

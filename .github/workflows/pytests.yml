@@ -1,35 +1,15 @@
-name: pytests
+name: ruff
 
 permissions:
   contents: read
 
 on:
-    push:
-    workflow_dispatch:
+  push:
+  workflow_dispatch:
+
 jobs:
-    run:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-        - name: Install uv # https://eed-solutions.atlassian.net/wiki/spaces/ES/pages/782434388/Best+Practice+uv+package+management#Github-Actions
-          uses: astral-sh/setup-uv@v4
-          with:
-            enable-cache: true
-        - name: Setup Python
-          uses: actions/setup-python@v5
-          with:
-            python-version-file: .python-version
-        - name: Install dependencies
-          run: |
-            python -m pip install --upgrade pip
-            uv sync
-        - name: Run pytests
-          env:
-            ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-            ENCRYPTION_PASWORD: ${{ secrets.ENCRYPTION_PASWORD }}
-            ENCRYPTION_RESULT: ${{ secrets.ENCRYPTION_RESULT }}
-            RUNS_ON_GA: ${{ vars.RUNS_ON_GA }}
-            _EXECUTION_ENVIRONMENT_: ${{ vars._EXECUTION_ENVIRONMENT_ }}
-          run: |
-            uv run pytest tests
+ run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest release
+        uses: EED-Solutions/eed_gha_workflows/.github/actions/pytests@Update-versions-of-actions
