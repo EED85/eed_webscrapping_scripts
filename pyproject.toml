@@ -31,7 +31,7 @@ dev = [
     "pre-commit>=4.1.0",
     "pytest>=8.3.5",
     "pytest-mock>=3.14.0",
-    "ruff>=0.9.7",
+    "ruff>=0.15.10",
 ]
 
 [build-system]
