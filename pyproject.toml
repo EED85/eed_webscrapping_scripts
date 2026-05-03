@@ -13,7 +13,7 @@ dependencies = [
     "duckdb==1.5.2",
     "eed-basic-utils",
     "filelock>=3.29.0",
-    "gitpython>=3.1.47",
+    "gitpython>=3.1.49",
     "loguru>=0.7.3",
     "h11>=0.16.0",
     "python-dotenv>=1.0.1",
