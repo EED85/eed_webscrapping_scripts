@@ -22,7 +22,7 @@ dependencies = [
     "selenium>=4.43.0",
     "webdriver-manager>=4.0.2",
     "urllib3>=2.7.0",
-    "virtualenv>=21.3.1",
+    "virtualenv>=21.3.3",
     "debugpy>=1.8.20",
 ]
 
